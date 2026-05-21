@@ -1,0 +1,119 @@
+.banner-hero {
+  min-height: 430px;
+  border-radius: 32px;
+  overflow: hidden;
+  background-image:
+    linear-gradient(90deg, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.35)),
+    url("https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80");
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.15);
+}
+
+.banner-overlay {
+  max-width: 680px;
+  padding: 64px;
+  color: white;
+}
+
+.banner-tag {
+  display: inline-block;
+  background: rgba(16, 185, 129, 0.18);
+  color: #a7f3d0;
+  border: 1px solid rgba(167, 243, 208, 0.3);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.banner-title {
+  margin-top: 24px;
+  font-size: 48px;
+  line-height: 1.08;
+  font-weight: 900;
+}
+
+.banner-text {
+  margin-top: 20px;
+  color: #e2e8f0;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.banner-button {
+  margin-top: 28px;
+  background: #10b981;
+  color: white;
+  padding: 14px 24px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.service-card,
+.premium-card,
+.dash-card {
+  border-radius: 24px;
+  padding: 24px;
+}
+
+.service-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
+  transition: 0.3s;
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.08);
+}
+
+.service-card h3,
+.premium-card h3 {
+  margin-top: 12px;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.service-card p,
+.premium-card p {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.premium-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.premium-card p {
+  color: #cbd5e1;
+}
+
+.dash-card {
+  background: #f8fafc;
+}
+
+.dash-card p {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.dash-card strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 28px;
+  color: #0f172a;
+}
+
+@media (max-width: 768px) {
+  .banner-overlay {
+    padding: 36px;
+  }
+
+  .banner-title {
+    font-size: 36px;
+  }
+}

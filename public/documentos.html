@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Meus documentos | MeuFinanças</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-50 min-h-screen">
+
+  <div class="flex min-h-screen">
+
+    <aside class="hidden md:flex w-72 bg-slate-900 text-white p-6 flex-col">
+      <div class="text-2xl font-bold text-emerald-400 mb-10">
+        MeuFinanças
+      </div>
+
+      <nav class="space-y-3">
+        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="/perfil.html">Dashboard</a>
+        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="#">Minhas finanças</a>
+        <a class="block bg-emerald-600 px-4 py-3 rounded-xl font-semibold" href="/documentos.html">Documentos</a>
+        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="#">Conversões</a>
+        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="#">Metas</a>
+        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="#">Configurações</a>
+      </nav>
+
+      <button onclick="logout()" class="mt-auto bg-white/10 hover:bg-white/20 px-4 py-3 rounded-xl">
+        Sair
+      </button>
+    </aside>
+
+    <main class="flex-1">
+
+      <header class="bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">
+            Meus documentos
+          </h1>
+          <p class="text-sm text-slate-500">
+            Envie e organize arquivos no seu perfil.
+          </p>
+        </div>
+
+        <button onclick="logout()" class="md:hidden bg-slate-900 text-white px-4 py-2 rounded-xl">
+          Sair
+        </button>
+      </header>
+
+      <section class="p-6 md:p-10">
+
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+          <h2 class="text-xl font-bold text-slate-900">
+            Enviar documento
+          </h2>
+
+          <p class="text-slate-500 mt-2 text-sm">
+            Permitidos: PDF, DOCX, JPG e PNG. Limite: 10MB.
+          </p>
+
+          <form id="formUpload" class="mt-6 space-y-4">
+            <input
+              id="documento"
+              name="documento"
+              type="file"
+              accept=".pdf,.docx,.jpg,.jpeg,.png"
+              class="block w-full text-sm text-slate-600
+              file:mr-4 file:py-3 file:px-5
+              file:rounded-xl file:border-0
+              file:text-sm file:font-semibold
+              file:bg-emerald-50 file:text-emerald-700
+              hover:file:bg-emerald-100"
+            />
+
+            <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-bold">
+              Enviar documento
+            </button>
+          </form>
+
+          <p id="mensagem" class="mt-4 text-sm"></p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm mt-8">
+          <h2 class="text-xl font-bold text-slate-900">
+            Documentos salvos
+          </h2>
+
+          <div id="listaDocumentos" class="mt-6 space-y-3">
+            <p class="text-slate-500 text-sm">Carregando documentos...</p>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="./js/documentos.js"></script>
+</body>
+</html>

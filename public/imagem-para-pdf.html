@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Imagem para PDF | MeuFinanças</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-50 min-h-screen flex items-center justify-center px-6">
+
+  <div class="bg-white max-w-xl w-full rounded-3xl shadow-xl border border-slate-100 p-8">
+    <h1 class="text-3xl font-bold text-slate-900">
+      Converter imagem para PDF
+    </h1>
+
+    <p class="text-slate-500 mt-2">
+      Envie uma imagem JPG ou PNG e gere um PDF rapidamente.
+    </p>
+
+    <form id="formConversor" class="mt-8 space-y-5">
+      <input
+        id="imagem"
+        name="imagem"
+        type="file"
+        accept=".jpg,.jpeg,.png"
+        class="block w-full text-sm text-slate-600
+        file:mr-4 file:py-3 file:px-5
+        file:rounded-xl file:border-0
+        file:text-sm file:font-semibold
+        file:bg-emerald-50 file:text-emerald-700
+        hover:file:bg-emerald-100"
+      />
+
+      <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold">
+        Converter para PDF
+      </button>
+    </form>
+
+    <p id="mensagem" class="mt-5 text-sm"></p>
+
+    <a id="downloadLink"
+       href="#"
+       target="_blank"
+       class="hidden mt-5 bg-slate-900 text-white text-center py-3 rounded-xl font-bold block">
+      Baixar PDF
+    </a>
+
+    <a href="/" class="block text-center text-emerald-600 font-semibold mt-6">
+      Voltar para início
+    </a>
+  </div>
+
+  <script src="./js/imagem-para-pdf.js"></script>
+</body>
+</html>

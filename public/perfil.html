@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Meu painel | MeuFinanças</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-50 min-h-screen">
+
+  <div class="flex min-h-screen">
+
+    <aside class="hidden md:flex w-72 bg-slate-900 text-white p-6 flex-col">
+      <div class="text-2xl font-bold text-emerald-400 mb-10">
+        MeuFinanças
+      </div>
+
+      <nav class="space-y-3">
+        <a class="block bg-emerald-600 px-4 py-3 rounded-xl font-semibold" href="#">Dashboard</a>
+        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="#">Minhas finanças</a>
+        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="/documentos.html">
+  Documentos
+</a>
+        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="#">Conversões</a>
+        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="#">Metas</a>
+        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="#">Configurações</a>
+      </nav>
+
+      <button onclick="logout()" class="mt-auto bg-white/10 hover:bg-white/20 px-4 py-3 rounded-xl">
+        Sair
+      </button>
+    </aside>
+
+    <main class="flex-1">
+
+      <header class="bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">
+            Olá, <span id="usuarioNome">usuário</span> 👋
+          </h1>
+          <p class="text-sm text-slate-500">
+            Bem-vindo à sua área privada.
+          </p>
+        </div>
+
+        <button onclick="logout()" class="md:hidden bg-slate-900 text-white px-4 py-2 rounded-xl">
+          Sair
+        </button>
+      </header>
+
+      <section class="p-6 md:p-10">
+
+        <div class="grid md:grid-cols-4 gap-6">
+          <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+            <p class="text-sm text-slate-500">Documentos salvos</p>
+            <strong class="block mt-3 text-3xl text-emerald-600">0</strong>
+          </div>
+
+          <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+            <p class="text-sm text-slate-500">Conversões</p>
+            <strong class="block mt-3 text-3xl text-emerald-600">0</strong>
+          </div>
+
+          <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+            <p class="text-sm text-slate-500">Metas ativas</p>
+            <strong class="block mt-3 text-3xl text-emerald-600">0</strong>
+          </div>
+
+          <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+            <p class="text-sm text-slate-500">Saúde financeira</p>
+            <strong class="block mt-3 text-3xl text-emerald-600">--</strong>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6 mt-8">
+
+          <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+            <h2 class="text-xl font-bold text-slate-900">
+              Comece por aqui
+            </h2>
+
+            <p class="text-slate-500 mt-2">
+              Escolha uma ferramenta para iniciar sua organização.
+            </p>
+
+            <div class="grid sm:grid-cols-2 gap-4 mt-6">
+              <button class="text-left bg-slate-50 hover:bg-emerald-50 border border-slate-100 rounded-2xl p-5">
+                📄
+                <h3 class="font-bold mt-3">Salvar documento</h3>
+                <p class="text-sm text-slate-500 mt-1">Organize arquivos no seu perfil.</p>
+              </button>
+
+              <button class="text-left bg-slate-50 hover:bg-emerald-50 border border-slate-100 rounded-2xl p-5">
+                💰
+                <h3 class="font-bold mt-3">Registrar gasto</h3>
+                <p class="text-sm text-slate-500 mt-1">Controle entradas e saídas.</p>
+              </button>
+
+              <button class="text-left bg-slate-50 hover:bg-emerald-50 border border-slate-100 rounded-2xl p-5">
+                🎯
+                <h3 class="font-bold mt-3">Criar meta</h3>
+                <p class="text-sm text-slate-500 mt-1">Defina objetivos financeiros.</p>
+              </button>
+
+              <button class="text-left bg-slate-50 hover:bg-emerald-50 border border-slate-100 rounded-2xl p-5">
+                🧾
+                <h3 class="font-bold mt-3">Organizar IR</h3>
+                <p class="text-sm text-slate-500 mt-1">Separe informações importantes.</p>
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 text-white rounded-3xl p-6 shadow-sm">
+            <h2 class="text-xl font-bold">
+              Dica inteligente
+            </h2>
+
+            <p class="text-slate-300 mt-3 text-sm leading-relaxed">
+              Comece cadastrando suas despesas fixas. Isso ajuda o sistema a mostrar quanto sobra no mês.
+            </p>
+
+            <button class="mt-6 bg-emerald-500 hover:bg-emerald-600 px-5 py-3 rounded-xl font-bold">
+              Ver recomendações
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <script src="./js/perfil.js"></script>
+</body>
+</html>
