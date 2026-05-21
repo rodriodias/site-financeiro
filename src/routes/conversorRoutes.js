@@ -44,7 +44,7 @@ const upload = multer({
 
 router.post(
   '/imagem-para-pdf',
-  upload.single('imagem'),
+  upload.array('imagens', 10),
   conversorController.imagemParaPdf
 );
 

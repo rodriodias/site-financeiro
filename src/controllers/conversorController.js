@@ -4,13 +4,11 @@ const path = require('path');
 
 exports.imagemParaPdf = (req, res) => {
   try {
-    if (!req.file) {
+    if (!req.files || req.files.length === 0) {
       return res.status(400).json({
         erro: 'Nenhuma imagem enviada.'
       });
     }
-
-    const imagem = req.file.path;
 
     const pastaConvertidos = path.join(__dirname, '../../convertidos');
 
@@ -21,30 +19,22 @@ exports.imagemParaPdf = (req, res) => {
     const nomePdf = `convertido-${Date.now()}.pdf`;
     const caminhoPdf = path.join(pastaConvertidos, nomePdf);
 
-    const doc = new PDFDocument({
-      autoFirstPage: false
-    });
-
+    const doc = new PDFDocument({ autoFirstPage: false });
     const stream = fs.createWriteStream(caminhoPdf);
-
-    stream.on('error', (erro) => {
-      console.log('Erro ao salvar PDF:', erro);
-      return res.status(500).json({
-        erro: 'Erro ao salvar PDF.'
-      });
-    });
 
     doc.pipe(stream);
 
-    doc.addPage({
-      size: 'A4',
-      margin: 40
-    });
+    req.files.forEach((arquivo) => {
+      doc.addPage({
+        size: 'A4',
+        margin: 40
+      });
 
-    doc.image(imagem, {
-      fit: [515, 760],
-      align: 'center',
-      valign: 'center'
+      doc.image(arquivo.path, {
+        fit: [515, 760],
+        align: 'center',
+        valign: 'center'
+      });
     });
 
     doc.end();
@@ -60,7 +50,7 @@ exports.imagemParaPdf = (req, res) => {
     console.log('Erro no conversor:', erro);
 
     return res.status(500).json({
-      erro: 'Erro interno ao converter imagem.'
+      erro: 'Erro interno ao converter imagens.'
     });
   }
 };
