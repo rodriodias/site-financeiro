@@ -8,6 +8,7 @@ const authRoutes = require('./src/routes/authRoutes');
 const perfilRoutes = require('./src/routes/perfilRoutes');
 const documentoRoutes = require('./src/routes/documentoRoutes');
 const conversorRoutes = require('./src/routes/conversorRoutes');
+const transacaoRoutes = require('./src/routes/transacaoRoutes');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use('/api/perfil', perfilRoutes);
 app.use('/api/documentos', documentoRoutes);
 app.use('/api/conversores', conversorRoutes);
 app.use('/convertidos', express.static('convertidos'));
+app.use('/api/transacoes', transacaoRoutes);
 
 const PORT = process.env.PORT || 3000;
 
