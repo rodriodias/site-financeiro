@@ -13,26 +13,7 @@
 
   <div class="flex min-h-screen">
 
-    <aside class="hidden md:flex w-72 bg-slate-900 text-white p-6 flex-col">
-      <div class="text-2xl font-bold text-emerald-400 mb-10">
-        MeuFinanças
-      </div>
-
-      <nav class="space-y-3">
-        <a class="block bg-emerald-600 px-4 py-3 rounded-xl font-semibold" href="#">Dashboard</a>
-        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="#">Minhas finanças</a>
-        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="/documentos.html">
-  Documentos
-</a>
-        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="#">Conversões</a>
-        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="#">Metas</a>
-        <a class="block hover:bg-slate-800 px-4 py-3 rounded-xl" href="#">Configurações</a>
-      </nav>
-
-      <button onclick="logout()" class="mt-auto bg-white/10 hover:bg-white/20 px-4 py-3 rounded-xl">
-        Sair
-      </button>
-    </aside>
+    <div id="sidebar"></div>
 
     <main class="flex-1">
 
@@ -136,5 +117,14 @@
   </div>
 
   <script src="./js/perfil.js"></script>
+  <script src="/assets/components/sidebar.js"></script>
+<script src="./js/perfil.js"></script>
+
+<script>
+  document.getElementById('sidebar').innerHTML =
+    criarSidebar('dashboard');
+</script>
+
+</body>
 </body>
 </html>

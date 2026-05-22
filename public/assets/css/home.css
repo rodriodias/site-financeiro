@@ -1,0 +1,107 @@
+.hero-banner {
+  min-height: 430px;
+  border-radius: 32px;
+  overflow: hidden;
+  background-image:
+    linear-gradient(90deg, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.35)),
+    url("https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80");
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.15);
+  transition: 0.4s ease;
+}
+
+.hero-content {
+  padding: 48px;
+  color: white;
+  max-width: 620px;
+}
+
+.hero-tag {
+  display: inline-block;
+  background: rgba(16, 185, 129, 0.2);
+  color: #a7f3d0;
+  border: 1px solid rgba(167, 243, 208, 0.3);
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.hero-title {
+  margin-top: 22px;
+  font-size: 42px;
+  line-height: 1.1;
+  font-weight: 900;
+}
+
+.hero-text {
+  margin-top: 18px;
+  color: #e2e8f0;
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.tool-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 26px;
+  padding: 26px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
+  transition: 0.3s;
+}
+
+.tool-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.08);
+}
+
+.tool-card span {
+  font-size: 32px;
+}
+
+.tool-card h3 {
+  margin-top: 16px;
+  font-size: 19px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.tool-card p {
+  margin-top: 8px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.benefit-card {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 22px;
+  padding: 22px;
+}
+
+.benefit-card strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.benefit-card p {
+  margin-top: 6px;
+  color: #cbd5e1;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .hero-content {
+    padding: 32px;
+  }
+
+  .hero-title {
+    font-size: 32px;
+  }
+
+  .hero-banner {
+    min-height: 360px;
+  }
+}

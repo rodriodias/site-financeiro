@@ -3,130 +3,152 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MeuFinanças</title>
+
+  <title>MeuFinanças | Ferramentas financeiras simples</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="/assets/css/home.css" />
 </head>
 
 <body class="bg-slate-50 text-slate-800">
 
-  <header class="bg-white border-b border-slate-100 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-      <div class="text-2xl font-bold text-emerald-600">MeuFinanças</div>
+  <div id="navbar"></div>
 
-      <nav class="hidden md:flex gap-7 text-sm font-medium text-slate-600">
-        <a href="#">Início</a>
-        <a href="#">Ferramentas</a>
-        <a href="#">Conversores</a>
-        <a href="#">Finanças</a>
-        <a href="#">Educação</a>
-      </nav>
+  <main>
 
-      <div class="flex gap-3">
-        <a href="./login.html" class="hidden sm:block text-slate-600 font-medium">
-  Entrar
-</a>
-        <a href="./cadastro.html" class="bg-emerald-600 text-white px-5 py-2 rounded-full font-semibold">
-  Criar conta
-</a>
-      </div>
-    </div>
-  </header>
+    <section class="max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-2 gap-10 items-center">
 
-  <section class="max-w-7xl mx-auto px-6 pt-8">
-    <div id="heroBanner" class="banner-hero">
-      <div class="banner-overlay">
-        <span id="bannerTag" class="banner-tag">Radar financeiro</span>
+      <div>
+        <span class="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-bold">
+          Finanças simples, privadas e úteis
+        </span>
 
-        <h1 id="bannerTitulo" class="banner-title">
+        <h1 class="mt-6 text-4xl md:text-6xl font-extrabold leading-tight text-slate-900">
           Organize sua vida financeira sem complicação
         </h1>
 
-        <p id="bannerTexto" class="banner-text">
-          Ferramentas simples para controlar gastos, converter documentos e cuidar melhor do seu dinheiro.
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed">
+          Use conversores, ferramentas financeiras e uma área privada para salvar documentos,
+          acompanhar metas e organizar sua rotina.
         </p>
 
-        <button class="banner-button">
-          Entender melhor →
-        </button>
-      </div>
-    </div>
-  </section>
+        <div class="mt-8 flex flex-col sm:flex-row gap-4">
+          <a href="/cadastro.html" class="bg-emerald-600 hover:bg-emerald-700 text-white px-7 py-4 rounded-full font-bold text-center">
+            Criar conta grátis
+          </a>
 
-  <main class="max-w-7xl mx-auto px-6 py-14">
-    <section class="grid lg:grid-cols-2 gap-10 items-center">
-      <div>
-        <span class="bg-emerald-100 text-emerald-700 px-4 py-2 rounded-full text-sm font-semibold">
-          Central de serviços úteis
-        </span>
-
-        <h2 class="mt-6 text-5xl font-extrabold leading-tight text-slate-900">
-          Finanças, documentos e organização em um só lugar
-        </h2>
-
-        <p class="mt-6 text-lg text-slate-600">
-          Use ferramentas gratuitas, organize suas contas e tenha recursos extras ao criar sua conta.
-          Sem conexão bancária e sem pedir dados sensíveis.
-        </p>
-      </div>
-
-      <div class="bg-white rounded-3xl shadow-xl p-6 border border-slate-100">
-        <h3 class="font-bold text-slate-800 mb-2">Prévia da área do usuário</h3>
-<p class="text-sm text-slate-500 mb-4">
-  Ao criar sua conta, você terá acesso ao painel completo com documentos, histórico e finanças.
-</p>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div class="dash-card">
-            <p>Documentos salvos</p>
-            <strong>12</strong>
-          </div>
-
-          <div class="dash-card">
-            <p>Conversões</p>
-            <strong>38</strong>
-          </div>
-
-          <div class="dash-card col-span-2">
-            <p>Saldo previsto do mês</p>
-            <strong>R$ 2.220</strong>
-            <div class="mt-4 h-3 bg-slate-200 rounded-full">
-              <div class="h-3 bg-emerald-500 rounded-full w-3/4"></div>
-            </div>
-          </div>
+          <a href="/imagem-para-pdf.html" class="bg-white border border-slate-200 px-7 py-4 rounded-full font-bold text-center">
+            Usar conversor
+          </a>
         </div>
       </div>
-    </section>
 
-    <section class="py-16">
-      <h2 class="text-3xl font-bold text-slate-900">Ferramentas gratuitas</h2>
-      <p class="text-slate-500 mt-2">Serviços rápidos para qualquer visitante usar.</p>
+      <div id="heroBanner" class="hero-banner">
+        <div class="hero-content">
+          <span id="bannerTag" class="hero-tag">Radar financeiro</span>
 
-      <div class="grid md:grid-cols-3 gap-6 mt-8">
-        <div class="service-card">📄 <h3>PDF para Word</h3><p>Converta documentos de forma simples.</p></div>
-        <div class="service-card">🖼️ <h3>Imagem para PDF</h3><p>Junte imagens em um arquivo PDF.</p></div>
-        <div class="service-card">📊 <h3>Juros compostos</h3><p>Simule rendimentos e metas.</p></div>
-        <div class="service-card">💰 <h3>Controle de gastos</h3><p>Organize entradas e saídas.</p></div>
-        <div class="service-card">📚 <h3>Educação financeira</h3><p>Aprenda sem linguagem complicada.</p></div>
-        <div class="service-card">🧾 <h3>Imposto de Renda</h3><p>Organize dados e comprovantes.</p></div>
+          <h2 id="bannerTitulo" class="hero-title">
+            Atualizações do seu dinheiro
+          </h2>
+
+          <p id="bannerTexto" class="hero-text">
+            Dicas simples para cuidar melhor da sua vida financeira.
+          </p>
+        </div>
       </div>
+
     </section>
 
-    <section class="bg-slate-900 text-white rounded-3xl p-10">
-      <h2 class="text-3xl font-bold">Recursos exclusivos para cadastrados</h2>
-      <p class="text-slate-300 mt-3">
-        Ao criar uma conta, você poderá salvar arquivos, manter histórico e acessar ferramentas privadas.
+    <section id="ferramentas" class="max-w-7xl mx-auto px-6 py-14">
+      <h2 class="text-3xl font-bold text-slate-900">
+        Ferramentas gratuitas
+      </h2>
+
+      <p class="text-slate-500 mt-2">
+        Serviços rápidos para usar sem complicação.
       </p>
 
       <div class="grid md:grid-cols-3 gap-6 mt-8">
-        <div class="premium-card">🔐 <h3>Pastas pessoais</h3><p>Salve documentos convertidos no seu perfil.</p></div>
-        <div class="premium-card">🕘 <h3>Histórico</h3><p>Veja conversões e arquivos recentes.</p></div>
-        <div class="premium-card">📈 <h3>Relatórios</h3><p>Acompanhe sua vida financeira.</p></div>
+
+        <a href="/imagem-para-pdf.html" class="tool-card">
+          <span>🖼️</span>
+          <h3>Imagem para PDF</h3>
+          <p>Junte uma ou várias imagens em um único PDF.</p>
+        </a>
+
+        <div class="tool-card opacity-70">
+          <span>📄</span>
+          <h3>PDF para Word</h3>
+          <p>Em breve: converta PDF em documento editável.</p>
+        </div>
+
+        <div class="tool-card opacity-70">
+          <span>📊</span>
+          <h3>Juros compostos</h3>
+          <p>Em breve: simule metas e investimentos.</p>
+        </div>
+
+        <div class="tool-card opacity-70">
+          <span>💰</span>
+          <h3>Controle de gastos</h3>
+          <p>Em breve: organize receitas e despesas.</p>
+        </div>
+
+        <div class="tool-card opacity-70">
+          <span>🎯</span>
+          <h3>Metas financeiras</h3>
+          <p>Em breve: acompanhe seus objetivos.</p>
+        </div>
+
+        <div class="tool-card opacity-70">
+          <span>🧾</span>
+          <h3>Imposto de Renda</h3>
+          <p>Em breve: organize comprovantes e valores.</p>
+        </div>
+
       </div>
     </section>
+
+    <section id="beneficios" class="max-w-7xl mx-auto px-6 py-14">
+      <div class="bg-slate-900 text-white rounded-3xl p-8 md:p-12 grid lg:grid-cols-2 gap-10 items-center">
+
+        <div>
+          <h2 class="text-3xl md:text-4xl font-bold">
+            Crie sua conta e tenha uma área privada
+          </h2>
+
+          <p class="text-slate-300 mt-4 leading-relaxed">
+            Salve documentos, acompanhe histórico, organize conversões e prepare sua vida financeira
+            em um ambiente simples e seguro.
+          </p>
+
+          <a href="/cadastro.html" class="inline-block mt-8 bg-emerald-500 hover:bg-emerald-600 text-white px-7 py-4 rounded-full font-bold">
+            Começar gratuitamente
+          </a>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div class="benefit-card">🔐 <strong>Privacidade</strong><p>Sem conexão bancária.</p></div>
+          <div class="benefit-card">📁 <strong>Documentos</strong><p>Arquivos no seu perfil.</p></div>
+          <div class="benefit-card">📈 <strong>Dashboard</strong><p>Resumo organizado.</p></div>
+          <div class="benefit-card">⚡ <strong>Praticidade</strong><p>Tudo em um só lugar.</p></div>
+        </div>
+
+      </div>
+    </section>
+
   </main>
 
-  <script src="./js/home.js"></script>
+  <footer class="border-t border-slate-200 py-8 text-center text-slate-500 text-sm">
+    MeuFinanças © 2026 — Ferramentas simples para sua vida financeira.
+  </footer>
+
+  <script src="/assets/components/navbar.js"></script>
+  <script src="/assets/js/home.js"></script>
+
+  <script>
+    document.getElementById('navbar').innerHTML = criarNavbar();
+  </script>
+
 </body>
 </html>
