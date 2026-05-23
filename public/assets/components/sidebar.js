@@ -29,6 +29,16 @@ function criarSidebar(paginaAtual = '') {
         </a>
 
         <a
+  class="block px-4 py-3 rounded-xl ${
+    paginaAtual === 'metas'
+      ? 'bg-emerald-600 font-semibold'
+      : 'hover:bg-slate-800'
+  }"
+  href="/metas.html">
+  Metas financeiras
+</a>
+
+        <a
           class="block px-4 py-3 rounded-xl ${
             paginaAtual === 'documentos'
               ? 'bg-emerald-600 font-semibold'
@@ -43,6 +53,7 @@ function criarSidebar(paginaAtual = '') {
           href="/imagem-para-pdf.html">
           Conversores
         </a>
+        
 
       </nav>
 

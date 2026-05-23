@@ -11,6 +11,7 @@ const conversorRoutes = require('./src/routes/conversorRoutes');
 const transacaoRoutes = require('./src/routes/transacaoRoutes');
 const categoriaRoutes = require('./src/routes/categoriaRoutes');
 const metaRoutes = require('./src/routes/metaRoutes');
+const orcamentoRoutes = require('./src/routes/orcamentoRoutes');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/convertidos', express.static('convertidos'));
 app.use('/api/transacoes', transacaoRoutes);
 app.use('/api/categorias', categoriaRoutes);
 app.use('/api/metas', metaRoutes);
+app.use('/api/orcamentos', orcamentoRoutes);
 
 const PORT = process.env.PORT || 3000;
 
