@@ -9,6 +9,8 @@ const perfilRoutes = require('./src/routes/perfilRoutes');
 const documentoRoutes = require('./src/routes/documentoRoutes');
 const conversorRoutes = require('./src/routes/conversorRoutes');
 const transacaoRoutes = require('./src/routes/transacaoRoutes');
+const categoriaRoutes = require('./src/routes/categoriaRoutes');
+const metaRoutes = require('./src/routes/metaRoutes');
 
 const app = express();
 
@@ -22,6 +24,8 @@ app.use('/api/documentos', documentoRoutes);
 app.use('/api/conversores', conversorRoutes);
 app.use('/convertidos', express.static('convertidos'));
 app.use('/api/transacoes', transacaoRoutes);
+app.use('/api/categorias', categoriaRoutes);
+app.use('/api/metas', metaRoutes);
 
 const PORT = process.env.PORT || 3000;
 

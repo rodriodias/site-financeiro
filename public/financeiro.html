@@ -3,31 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Minhas finanças | MeuFinanças</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-slate-50 min-h-screen">
-
   <div class="flex min-h-screen">
-
     <div id="sidebar"></div>
 
     <main class="flex-1">
-
       <header class="bg-white border-b border-slate-100 px-6 py-4">
-        <h1 class="text-2xl font-bold text-slate-900">
-          Minhas finanças
-        </h1>
-        <p class="text-sm text-slate-500">
-          Registre receitas, despesas e acompanhe seu saldo.
-        </p>
+        <h1 class="text-2xl font-bold text-slate-900">Minhas finanças</h1>
+        <p class="text-sm text-slate-500">Registre receitas, despesas e acompanhe seu saldo.</p>
       </header>
 
       <section class="p-6 md:p-10">
-
         <div class="grid md:grid-cols-3 gap-6">
           <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
             <p class="text-sm text-slate-500">Receitas</p>
@@ -45,15 +35,48 @@
           </div>
         </div>
 
-        <div class="grid lg:grid-cols-3 gap-6 mt-8">
+        <div class="grid xl:grid-cols-2 gap-4 mt-4 items-start">
+          <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm h-fit">
+            <div class="mb-4">
+              <h2 class="text-lg font-bold text-slate-900">Resumo do mês</h2>
+              <p class="text-sm text-slate-500">Receitas e despesas do mês atual</p>
+            </div>
 
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-slate-500">Receitas</span>
+                <strong id="receitasMes" class="text-emerald-600">R$ 0,00</strong>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <span class="text-slate-500">Despesas</span>
+                <strong id="despesasMes" class="text-red-500">R$ 0,00</strong>
+              </div>
+
+              <div class="border-t border-slate-100 pt-3 flex items-center justify-between">
+                <span class="font-semibold text-slate-700">Saldo do mês</span>
+                <strong id="saldoMes" class="text-slate-900 text-lg">R$ 0,00</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm h-fit">
+            <div class="mb-4">
+              <h2 class="text-lg font-bold text-slate-900">Gastos por categoria</h2>
+              <p class="text-sm text-slate-500">Categorias com maiores despesas</p>
+            </div>
+
+            <div class="max-h-[260px] mx-auto">
+              <canvas id="graficoCategorias"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6 mt-8">
           <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-            <h2 class="text-xl font-bold text-slate-900">
-              Nova transação
-            </h2>
+            <h2 class="text-xl font-bold text-slate-900">Nova transação</h2>
 
             <form id="formTransacao" class="mt-6 space-y-4">
-
               <select id="tipo" class="w-full border border-slate-200 rounded-xl px-4 py-3">
                 <option value="receita">Receita</option>
                 <option value="despesa">Despesa</option>
@@ -63,33 +86,67 @@
                 class="w-full border border-slate-200 rounded-xl px-4 py-3" />
 
               <select id="categoria" class="w-full border border-slate-200 rounded-xl px-4 py-3">
-  <option value="">Selecione uma categoria</option>
-  <option value="Casa">Casa</option>
-  <option value="Alimentação">Alimentação</option>
-  <option value="Transporte">Transporte</option>
-  <option value="Saúde">Saúde</option>
-  <option value="Educação">Educação</option>
-  <option value="Lazer">Lazer</option>
-  <option value="Mercado">Mercado</option>
-  <option value="Contas fixas">Contas fixas</option>
-  <option value="Trabalho">Trabalho</option>
-  <option value="Investimentos">Investimentos</option>
-  <option value="Dívidas">Dívidas</option>
-  <option value="Outros">Outros</option>
-  <option value="nova">+ Criar nova categoria</option>
+                <option value="">Selecione a categoria principal</option>
+              </select>
+
+              <select id="subcategoria" class="w-full border border-slate-200 rounded-xl px-4 py-3">
+                <option value="">Selecione a subcategoria</option>
+              </select>
+
+              <select id="tipo_gasto" class="w-full border border-slate-200 rounded-xl px-4 py-3">
+                <option value="">Tipo de gasto</option>
+                <option value="Essencial">Essencial</option>
+                <option value="Opcional">Opcional</option>
+                <option value="Investimento">Investimento</option>
+                <option value="Dívida">Dívida</option>
+                <option value="Emergência">Emergência</option>
+              </select>
+
+              <select id="meta_id" class="w-full border border-slate-200 rounded-xl px-4 py-3">
+  <option value="">Vincular a uma meta opcional</option>
 </select>
 
-<input id="novaCategoria" type="text" placeholder="Digite a nova categoria"
-  class="hidden w-full border border-slate-200 rounded-xl px-4 py-3" />
+              <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 space-y-3">
+                <p class="text-sm font-bold text-slate-700">Criar nova categoria</p>
 
-<input id="descricao" type="text" placeholder="Nome da transação. Ex: Aluguel, salário, mercado"
-  class="w-full border border-slate-200 rounded-xl px-4 py-3" />
+                <input id="novaCategoriaNome" type="text" placeholder="Categoria principal"
+                  class="w-full border border-slate-200 rounded-xl px-4 py-3" />
 
-<input id="data_transacao" type="datetime-local"
-  class="w-full border border-slate-200 rounded-xl px-4 py-3" />
+                <input id="novaSubcategoria" type="text" placeholder="Subcategoria"
+                  class="w-full border border-slate-200 rounded-xl px-4 py-3" />
 
-              <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold">
+                <select id="novoTipoGasto" class="w-full border border-slate-200 rounded-xl px-4 py-3">
+                  <option value="">Tipo de gasto</option>
+                  <option value="Essencial">Essencial</option>
+                  <option value="Opcional">Opcional</option>
+                  <option value="Investimento">Investimento</option>
+                  <option value="Dívida">Dívida</option>
+                  <option value="Emergência">Emergência</option>
+                </select>
+
+                <button id="botaoCriarCategoria" type="button"
+                  class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-xl font-bold">
+                  Criar categoria
+                </button>
+
+                <p id="mensagemCategoria" class="text-sm"></p>
+              </div>
+
+              <input id="descricao" type="text" placeholder="Nome da transação. Ex: Aluguel, salário, mercado"
+                class="w-full border border-slate-200 rounded-xl px-4 py-3" />
+
+              <input id="data_transacao" type="datetime-local"
+                class="w-full border border-slate-200 rounded-xl px-4 py-3" />
+
+              <input id="transacaoId" type="hidden" />
+
+              <button id="botaoSalvar" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold">
                 Salvar transação
+              </button>
+
+              <button id="botaoCancelarEdicao" type="button"
+                class="hidden w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl font-bold">
+                Cancelar edição
               </button>
             </form>
 
@@ -97,30 +154,61 @@
           </div>
 
           <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-            <h2 class="text-xl font-bold text-slate-900">
-              Histórico
-            </h2>
+            <h2 class="text-xl font-bold text-slate-900">Histórico</h2>
+            <p class="text-sm text-slate-500 mt-1 mb-5">
+              Filtre suas transações por texto, tipo, categoria ou período.
+            </p>
+
+            <div class="flex items-center gap-3 flex-wrap mb-6">
+              <input id="filtroTexto" type="text" placeholder="Buscar..."
+                class="h-11 w-52 border border-slate-200 rounded-xl px-4 text-sm bg-white" />
+
+              <select id="filtroTipo"
+                class="h-11 w-44 border border-slate-200 rounded-xl px-4 text-sm bg-white">
+                <option value="">Todos os tipos</option>
+                <option value="receita">Receitas</option>
+                <option value="despesa">Despesas</option>
+              </select>
+
+              <select id="filtroCategoria"
+                class="h-11 w-44 border border-slate-200 rounded-xl px-4 text-sm bg-white">
+                <option value="">Todas categorias</option>
+              </select>
+
+              <input id="filtroDataInicio" type="date"
+                class="h-11 w-40 border border-slate-200 rounded-xl px-4 text-sm bg-white" />
+
+              <input id="filtroDataFim" type="date"
+                class="h-11 w-40 border border-slate-200 rounded-xl px-4 text-sm bg-white" />
+
+              <button id="botaoBuscarFiltros" type="button"
+                class="h-11 px-5 bg-emerald-600 hover:bg-emerald-700 rounded-xl text-sm font-semibold text-white">
+                Buscar
+              </button>
+
+              <button id="limparFiltros" type="button"
+                class="h-11 px-5 bg-slate-100 hover:bg-slate-200 rounded-xl text-sm font-semibold text-slate-700">
+                Limpar
+              </button>
+            </div>
 
             <div id="listaTransacoes" class="mt-6 space-y-3">
               <p class="text-sm text-slate-500">Carregando transações...</p>
             </div>
           </div>
-
         </div>
-
       </section>
-
     </main>
-
   </div>
 
   <script src="/assets/components/sidebar.js"></script>
-  <script src="/js/financeiro.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script src="/js/financeiro.js"></script>
 
   <script>
     document.getElementById('sidebar').innerHTML =
       criarSidebar('financeiro');
   </script>
-
 </body>
 </html>
