@@ -16,15 +16,7 @@
 
     <main class="flex-1">
 
-      <header class="bg-white border-b border-slate-100 px-6 py-4">
-        <h1 class="text-2xl font-bold text-slate-900">
-          Orçamentos mensais
-        </h1>
-
-        <p class="text-sm text-slate-500">
-          Defina limites de gastos por categoria.
-        </p>
-      </header>
+      <div id="topbar"></div>
 
       <section class="p-6 md:p-10">
 
@@ -57,7 +49,6 @@
                 <select
                   id="mes"
                   class="w-full border border-slate-200 rounded-xl px-4 py-3">
-
                   <option value="1">Janeiro</option>
                   <option value="2">Fevereiro</option>
                   <option value="3">Março</option>
@@ -111,11 +102,19 @@
   </div>
 
   <script src="/assets/components/sidebar.js"></script>
+  <script src="/assets/components/topbar.js"></script>
+  <script src="/assets/components/notificacoes.js"></script>
   <script src="/js/orcamentos.js"></script>
 
   <script>
     document.getElementById('sidebar').innerHTML =
       criarSidebar('orcamentos');
+
+    document.getElementById('topbar').innerHTML =
+      criarTopbar(
+        'Orçamentos mensais',
+        'Defina limites de gastos por categoria.'
+      );
   </script>
 
 </body>

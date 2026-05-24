@@ -17,24 +17,12 @@
 
     <main class="flex-1">
 
-      <header class="bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center">
-        <div>
-          <h1 class="text-2xl font-bold text-slate-900">
-            Meus documentos
-          </h1>
-          <p class="text-sm text-slate-500">
-            Envie e organize arquivos no seu perfil.
-          </p>
-        </div>
-
-        <button onclick="logout()" class="md:hidden bg-slate-900 text-white px-4 py-2 rounded-xl">
-          Sair
-        </button>
-      </header>
+      <div id="topbar"></div>
 
       <section class="p-6 md:p-10">
 
         <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+
           <h2 class="text-xl font-bold text-slate-900">
             Enviar documento
           </h2>
@@ -44,6 +32,7 @@
           </p>
 
           <form id="formUpload" class="mt-6 space-y-4">
+
             <input
               id="documento"
               name="documento"
@@ -57,22 +46,33 @@
               hover:file:bg-emerald-100"
             />
 
-            <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-bold">
+            <button
+              class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-bold">
+
               Enviar documento
+
             </button>
+
           </form>
 
           <p id="mensagem" class="mt-4 text-sm"></p>
+
         </div>
 
         <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm mt-8">
+
           <h2 class="text-xl font-bold text-slate-900">
             Documentos salvos
           </h2>
 
           <div id="listaDocumentos" class="mt-6 space-y-3">
-            <p class="text-slate-500 text-sm">Carregando documentos...</p>
+
+            <p class="text-slate-500 text-sm">
+              Carregando documentos...
+            </p>
+
           </div>
+
         </div>
 
       </section>
@@ -81,12 +81,24 @@
 
   </div>
 
-  <script src="./js/documentos.js"></script>
   <script src="/assets/components/sidebar.js"></script>
 
-<script>
-  document.getElementById('sidebar').innerHTML =
-    criarSidebar('documentos');
-</script>
+<script src="/assets/components/topbar.js"></script>
+
+<script src="/assets/components/notificacoes.js"></script>
+
+<script src="/js/documentos.js"></script>
+
+  <script>
+    document.getElementById('sidebar').innerHTML =
+      criarSidebar('documentos');
+
+    document.getElementById('topbar').innerHTML =
+      criarTopbar(
+        'Meus documentos',
+        'Envie e organize arquivos no seu perfil.'
+      );
+  </script>
+
 </body>
 </html>

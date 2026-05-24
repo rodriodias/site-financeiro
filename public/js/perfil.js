@@ -12,6 +12,7 @@ const despesasMes = document.getElementById('despesasMes');
 const metasAtivas = document.getElementById('metasAtivas');
 const ultimasTransacoes = document.getElementById('ultimasTransacoes');
 const dicaFinanceira = document.getElementById('dicaFinanceira');
+const listaAlertas = document.getElementById('listaAlertas');
 
 if (usuario && usuario.nome) {
   usuarioNome.textContent = usuario.nome;
@@ -141,7 +142,68 @@ async function carregarUltimasTransacoes() {
   }).join('');
 }
 
+async function carregarAlertas() {
+  const resposta = await fetch('/api/alertas', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  const alertas = await resposta.json();
+
+  if (!resposta.ok) {
+    listaAlertas.innerHTML = `
+      <p class="text-sm text-red-600">
+        Erro ao carregar alertas.
+      </p>
+    `;
+    return;
+  }
+
+  if (alertas.length === 0) {
+    listaAlertas.innerHTML = `
+      <div class="bg-emerald-50 text-emerald-700 rounded-2xl p-4 text-sm font-medium">
+        ✅ Nenhum alerta importante no momento.
+      </div>
+    `;
+    return;
+  }
+
+  listaAlertas.innerHTML = alertas.map((alerta) => {
+
+    const estilos = {
+      erro: 'bg-red-50 text-red-600 border-red-100',
+      alerta: 'bg-amber-50 text-amber-700 border-amber-100',
+      sucesso: 'bg-emerald-50 text-emerald-700 border-emerald-100'
+    };
+
+    const icones = {
+      erro: '🚨',
+      alerta: '⚠️',
+      sucesso: '🎯'
+    };
+
+    return `
+      <div class="
+        border rounded-2xl p-4 text-sm font-medium
+        ${estilos[alerta.tipo]}
+      ">
+        <div class="flex items-start gap-3">
+          <span class="text-lg">
+            ${icones[alerta.tipo]}
+          </span>
+
+          <span>
+            ${alerta.mensagem}
+          </span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
 carregarResumoGeral();
 carregarResumoMensal();
 carregarMetas();
 carregarUltimasTransacoes();
+carregarAlertas();

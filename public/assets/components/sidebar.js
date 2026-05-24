@@ -37,6 +37,15 @@ function criarSidebar(paginaAtual = '') {
   href="/metas.html">
   Metas financeiras
 </a>
+<a
+  class="block px-4 py-3 rounded-xl ${
+    paginaAtual === 'orcamentos'
+      ? 'bg-emerald-600 font-semibold'
+      : 'hover:bg-slate-800'
+  }"
+  href="/orcamentos.html">
+  Orçamentos mensais
+</a>
 
         <a
           class="block px-4 py-3 rounded-xl ${

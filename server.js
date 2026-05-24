@@ -12,6 +12,8 @@ const transacaoRoutes = require('./src/routes/transacaoRoutes');
 const categoriaRoutes = require('./src/routes/categoriaRoutes');
 const metaRoutes = require('./src/routes/metaRoutes');
 const orcamentoRoutes = require('./src/routes/orcamentoRoutes');
+const alertaRoutes = require('./src/routes/alertaRoutes');
+const notificacaoRoutes = require('./src/routes/notificacaoRoutes');
 
 const app = express();
 
@@ -28,6 +30,8 @@ app.use('/api/transacoes', transacaoRoutes);
 app.use('/api/categorias', categoriaRoutes);
 app.use('/api/metas', metaRoutes);
 app.use('/api/orcamentos', orcamentoRoutes);
+app.use('/api/alertas', alertaRoutes);
+app.use('/api/notificacoes', notificacaoRoutes);
 
 const PORT = process.env.PORT || 3000;
 
