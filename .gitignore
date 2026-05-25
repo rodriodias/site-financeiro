@@ -2,3 +2,6 @@ node_modules
 .env
 uploads
 convertidos
+temp
+dist
+.DS_Store
