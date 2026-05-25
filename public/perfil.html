@@ -10,73 +10,52 @@
 </head>
 
 <body class="bg-slate-50 min-h-screen">
-
   <div class="flex min-h-screen">
-
     <div id="sidebar"></div>
 
     <main class="flex-1">
-
-   <div id="topbar"></div>
+      <div id="topbar"></div>
 
       <section class="p-6 md:p-10">
 
         <div class="grid md:grid-cols-4 gap-6">
 
           <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-            <p class="text-sm text-slate-500">
-              Saldo atual
-            </p>
-
-            <strong
-              id="saldoAtual"
-              class="block mt-3 text-3xl text-slate-900">
-
-              R$ 0,00
-
-            </strong>
+            <p class="text-sm text-slate-500">Saldo atual</p>
+            <strong id="saldoAtual" class="block mt-3 text-3xl text-slate-900">R$ 0,00</strong>
           </div>
 
           <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-            <p class="text-sm text-slate-500">
-              Receitas do mês
-            </p>
-
-            <strong
-              id="receitasMes"
-              class="block mt-3 text-3xl text-emerald-600">
-
-              R$ 0,00
-
-            </strong>
+            <p class="text-sm text-slate-500">Receitas do mês</p>
+            <strong id="receitasMes" class="block mt-3 text-3xl text-emerald-600">R$ 0,00</strong>
           </div>
 
           <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-            <p class="text-sm text-slate-500">
-              Despesas do mês
-            </p>
-
-            <strong
-              id="despesasMes"
-              class="block mt-3 text-3xl text-red-500">
-
-              R$ 0,00
-
-            </strong>
+            <p class="text-sm text-slate-500">Despesas do mês</p>
+            <strong id="despesasMes" class="block mt-3 text-3xl text-red-500">R$ 0,00</strong>
           </div>
 
           <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-            <p class="text-sm text-slate-500">
-              Metas ativas
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-slate-500">Saúde financeira</p>
+                <strong id="scoreFinanceiro" class="block mt-3 text-3xl text-emerald-600">--</strong>
+              </div>
+
+              <div class="text-4xl">📊</div>
+            </div>
+
+            <div class="w-full bg-slate-100 rounded-full h-3 mt-5">
+              <div
+                id="barraScore"
+                class="bg-emerald-500 h-3 rounded-full transition-all duration-500"
+                style="width: 0%">
+              </div>
+            </div>
+
+            <p id="mensagemScore" class="text-xs text-slate-500 mt-3">
+              Calculando saúde financeira...
             </p>
-
-            <strong
-              id="metasAtivas"
-              class="block mt-3 text-3xl text-blue-600">
-
-              0
-
-            </strong>
           </div>
 
         </div>
@@ -84,152 +63,140 @@
         <div class="grid lg:grid-cols-3 gap-6 mt-8">
 
           <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
-
             <div class="flex items-center justify-between gap-4">
-
               <div>
-                <h2 class="text-xl font-bold text-slate-900">
-                  Últimas transações
-                </h2>
-
+                <h2 class="text-xl font-bold text-slate-900">Últimas transações</h2>
                 <p class="text-sm text-slate-500 mt-1">
                   Acompanhe seus lançamentos mais recentes.
                 </p>
               </div>
 
-              <a
-                href="/financeiro.html"
-                class="text-sm font-bold text-emerald-600 hover:text-emerald-700">
-
+              <a href="/financeiro.html" class="text-sm font-bold text-emerald-600 hover:text-emerald-700">
                 Ver todas
-
               </a>
-
             </div>
 
             <div id="ultimasTransacoes" class="mt-6 space-y-3">
-
-              <p class="text-sm text-slate-500">
-                Carregando transações...
-              </p>
-
+              <p class="text-sm text-slate-500">Carregando transações...</p>
             </div>
-
           </div>
 
           <div class="bg-slate-900 text-white rounded-3xl p-6 shadow-sm">
+            <h2 class="text-xl font-bold">Dica inteligente</h2>
 
-            <h2 class="text-xl font-bold">
-              Dica inteligente
-            </h2>
-
-            <p
-              id="dicaFinanceira"
-              class="text-slate-300 mt-3 text-sm leading-relaxed">
-
-              Comece cadastrando suas despesas fixas.
-              Isso ajuda o sistema a mostrar quanto sobra no mês.
-
+            <p id="dicaFinanceira" class="text-slate-300 mt-3 text-sm leading-relaxed">
+              Comece cadastrando suas despesas fixas. Isso ajuda o sistema a mostrar quanto sobra no mês.
             </p>
 
             <div class="mt-6 grid gap-3">
-
-              <a
-                href="/financeiro.html"
+              <a href="/financeiro.html"
                 class="block text-center bg-emerald-500 hover:bg-emerald-600 px-5 py-3 rounded-xl font-bold transition">
-
                 Registrar transação
-
               </a>
 
-              <a
-                href="/metas.html"
+              <a href="/metas.html"
                 class="block text-center bg-white/10 hover:bg-white/20 px-5 py-3 rounded-xl font-bold transition">
-
                 Ver metas
-
               </a>
+            </div>
+          </div>
 
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-6 mt-8">
+
+          <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h2 class="text-xl font-bold text-slate-900">Receitas x despesas</h2>
+                <p class="text-sm text-slate-500">Visão financeira do mês atual.</p>
+              </div>
             </div>
 
+            <canvas id="graficoFinanceiro"></canvas>
+          </div>
+
+          <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+            <div class="flex items-center justify-between mb-6">
+              <div>
+                <h2 class="text-xl font-bold text-slate-900">Gastos por categoria</h2>
+                <p class="text-sm text-slate-500">Categorias com maior impacto financeiro.</p>
+              </div>
+            </div>
+
+            <canvas id="graficoCategorias"></canvas>
           </div>
 
         </div>
 
         <div class="grid lg:grid-cols-3 gap-6 mt-8">
 
-          <a
-            href="/documentos.html"
-            class="bg-white hover:bg-emerald-50 border border-slate-100 rounded-3xl p-6 shadow-sm transition">
+          <div class="lg:col-span-2 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+            <h2 class="text-lg font-bold text-slate-900">Insights inteligentes</h2>
 
+            <div id="insightsFinanceiros" class="mt-5 space-y-3">
+              <div class="bg-slate-50 rounded-2xl p-4 text-sm text-slate-500">
+                Analisando informações financeiras...
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+            <p class="text-sm text-slate-500">Metas ativas</p>
+            <strong id="metasAtivas" class="block mt-3 text-3xl text-blue-600">0</strong>
+
+            <a href="/metas.html"
+              class="inline-block mt-5 text-sm font-bold text-emerald-600 hover:text-emerald-700">
+              Ver metas financeiras
+            </a>
+          </div>
+
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6 mt-8">
+
+          <a href="/documentos.html"
+            class="bg-white hover:bg-emerald-50 border border-slate-100 rounded-3xl p-6 shadow-sm transition">
             <span class="text-3xl">📄</span>
-
-            <h3 class="font-bold mt-4 text-slate-900">
-              Documentos
-            </h3>
-
-            <p class="text-sm text-slate-500 mt-1">
-              Organize arquivos no seu perfil.
-            </p>
-
+            <h3 class="font-bold mt-4 text-slate-900">Documentos</h3>
+            <p class="text-sm text-slate-500 mt-1">Organize arquivos no seu perfil.</p>
           </a>
 
-          <a
-            href="/financeiro.html"
+          <a href="/financeiro.html"
             class="bg-white hover:bg-emerald-50 border border-slate-100 rounded-3xl p-6 shadow-sm transition">
-
             <span class="text-3xl">💰</span>
-
-            <h3 class="font-bold mt-4 text-slate-900">
-              Minhas finanças
-            </h3>
-
-            <p class="text-sm text-slate-500 mt-1">
-              Controle entradas, saídas e categorias.
-            </p>
-
+            <h3 class="font-bold mt-4 text-slate-900">Minhas finanças</h3>
+            <p class="text-sm text-slate-500 mt-1">Controle entradas, saídas e categorias.</p>
           </a>
 
-          <a
-            href="/metas.html"
+          <a href="/metas.html"
             class="bg-white hover:bg-emerald-50 border border-slate-100 rounded-3xl p-6 shadow-sm transition">
-
             <span class="text-3xl">🎯</span>
-
-            <h3 class="font-bold mt-4 text-slate-900">
-              Metas financeiras
-            </h3>
-
-            <p class="text-sm text-slate-500 mt-1">
-              Acompanhe objetivos e progresso.
-            </p>
-
+            <h3 class="font-bold mt-4 text-slate-900">Metas financeiras</h3>
+            <p class="text-sm text-slate-500 mt-1">Acompanhe objetivos e progresso.</p>
           </a>
 
         </div>
 
       </section>
-
     </main>
-
   </div>
 
- <script src="/assets/components/sidebar.js"></script>
-
-<script src="/assets/components/topbar.js"></script>
-
-<script src="/assets/components/notificacoes.js"></script>
-
-<script src="/js/perfil.js"></script>
+  <script src="/assets/components/sidebar.js"></script>
+  <script src="/assets/components/topbar.js"></script>
+  <script src="/assets/components/notificacoes.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/js/perfil.js"></script>
 
   <script>
     document.getElementById('sidebar').innerHTML =
       criarSidebar('dashboard');
 
-      document.getElementById('topbar').innerHTML =
-  criarTopbar('Olá, <span id="usuarioNome">usuário</span> 👋', 'Veja um resumo rápido da sua vida financeira.');
+    document.getElementById('topbar').innerHTML =
+      criarTopbar(
+        'Olá, <span id="usuarioNome">usuário</span> 👋',
+        'Veja um resumo rápido da sua vida financeira.'
+      );
   </script>
-
-
 </body>
 </html>

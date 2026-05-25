@@ -13,6 +13,17 @@ const metasAtivas = document.getElementById('metasAtivas');
 const ultimasTransacoes = document.getElementById('ultimasTransacoes');
 const dicaFinanceira = document.getElementById('dicaFinanceira');
 const listaAlertas = document.getElementById('listaAlertas');
+const graficoFinanceiro = document.getElementById('graficoFinanceiro');
+
+const graficoCategorias = document.getElementById('graficoCategorias');
+
+const scoreFinanceiro = document.getElementById('scoreFinanceiro');
+
+const barraScore = document.getElementById('barraScore');
+
+const mensagemScore = document.getElementById('mensagemScore');
+
+const insightsFinanceiros = document.getElementById('insightsFinanceiros');
 
 if (usuario && usuario.nome) {
   usuarioNome.textContent = usuario.nome;
@@ -207,3 +218,155 @@ carregarResumoMensal();
 carregarMetas();
 carregarUltimasTransacoes();
 carregarAlertas();
+
+async function carregarGraficos() {
+
+  const respostaResumo = await fetch('/api/transacoes/resumo-mensal', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  const resumo = await respostaResumo.json();
+
+  const receitas =
+    Number(resumo.receitas || 0);
+
+  const despesas =
+    Number(resumo.despesas || 0);
+
+  new Chart(graficoFinanceiro, {
+    type: 'bar',
+
+    data: {
+      labels: ['Receitas', 'Despesas'],
+
+      datasets: [{
+        label: 'Valor',
+        data: [receitas, despesas],
+        borderRadius: 12
+      }]
+    },
+
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false
+        }
+      }
+    }
+  });
+
+  const respostaCategorias = await fetch('/api/transacoes/categorias', {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  const categorias = await respostaCategorias.json();
+
+  new Chart(graficoCategorias, {
+    type: 'doughnut',
+
+    data: {
+      labels: categorias.map((item) => item.categoria),
+
+      datasets: [{
+        data: categorias.map((item) => item.total),
+        borderWidth: 0
+      }]
+    },
+
+    options: {
+      responsive: true
+    }
+  });
+
+  calcularScore(receitas, despesas);
+}
+
+function calcularScore(receitas, despesas) {
+
+  let score = 100;
+
+  if (despesas > receitas) {
+    score = 30;
+  } else if (despesas >= receitas * 0.8) {
+    score = 60;
+  } else if (despesas >= receitas * 0.5) {
+    score = 80;
+  }
+
+  scoreFinanceiro.textContent =
+    `${score}%`;
+
+  barraScore.style.width =
+    `${score}%`;
+
+  if (score >= 80) {
+
+    mensagemScore.textContent =
+      'Sua saúde financeira está excelente.';
+
+    barraScore.className =
+      'bg-emerald-500 h-3 rounded-full transition-all duration-500';
+
+  } else if (score >= 60) {
+
+    mensagemScore.textContent =
+      'Sua saúde financeira está razoável, mas há espaço para melhorar.';
+
+    barraScore.className =
+      'bg-amber-500 h-3 rounded-full transition-all duration-500';
+
+  } else {
+
+    mensagemScore.textContent =
+      'Suas despesas estão comprometendo sua saúde financeira.';
+
+    barraScore.className =
+      'bg-red-500 h-3 rounded-full transition-all duration-500';
+
+  }
+
+  gerarInsights(receitas, despesas, score);
+}
+
+function gerarInsights(receitas, despesas, score) {
+
+  const insights = [];
+
+  if (despesas > receitas) {
+    insights.push(
+      '⚠️ Você gastou mais do que recebeu neste mês.'
+    );
+  }
+
+  if (score >= 80) {
+    insights.push(
+      '🎯 Seu controle financeiro está muito saudável.'
+    );
+  }
+
+  if (receitas > 0 && despesas <= receitas * 0.5) {
+    insights.push(
+      '💰 Você conseguiu economizar boa parte da sua renda.'
+    );
+  }
+
+  if (insights.length === 0) {
+    insights.push(
+      '📊 Continue registrando movimentações para receber análises inteligentes.'
+    );
+  }
+
+  insightsFinanceiros.innerHTML =
+    insights.map((item) => `
+      <div class="bg-slate-50 rounded-2xl p-4 text-sm text-slate-700">
+        ${item}
+      </div>
+    `).join('');
+}
+
+carregarGraficos();

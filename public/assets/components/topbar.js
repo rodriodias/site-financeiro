@@ -76,5 +76,34 @@ function criarTopbar(titulo, subtitulo = '') {
         </button>
       </div>
     </header>
+
+    <div
+      id="toastNotificacao"
+      class="hidden fixed top-5 right-5 z-[9999] w-80 bg-white border border-slate-200 shadow-2xl rounded-2xl overflow-hidden">
+
+      <div class="p-4">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h3
+              id="toastTitulo"
+              class="font-bold text-slate-900 text-sm">
+              Nova notificação
+            </h3>
+
+            <p
+              id="toastMensagem"
+              class="text-sm text-slate-500 mt-1">
+              Você recebeu uma nova notificação.
+            </p>
+          </div>
+
+          <button
+            id="fecharToast"
+            class="text-slate-400 hover:text-slate-700 font-bold">
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
   `;
 }

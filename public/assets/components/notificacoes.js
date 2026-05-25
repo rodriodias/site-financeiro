@@ -1,3 +1,6 @@
+let notificacoesAnteriores = 0;
+let intervaloNotificacoes = null;
+
 async function iniciarNotificacoes() {
   const token = localStorage.getItem('token');
 
@@ -10,9 +13,14 @@ async function iniciarNotificacoes() {
   const marcarTodas = document.getElementById('marcarTodasLidas');
   const limparTodas = document.getElementById('limparNotificacoes');
 
+  const toast = document.getElementById('toastNotificacao');
+  const toastTitulo = document.getElementById('toastTitulo');
+  const toastMensagem = document.getElementById('toastMensagem');
+  const fecharToast = document.getElementById('fecharToast');
+
   if (!botao || !dropdown || !lista || !contador) return;
 
-  async function carregarNotificacoes() {
+  async function carregarNotificacoes(mostrarToast = false) {
     const resposta = await fetch('/api/notificacoes', {
       headers: {
         Authorization: `Bearer ${token}`
@@ -31,6 +39,27 @@ async function iniciarNotificacoes() {
     }
 
     const naoLidas = notificacoes.filter((item) => !item.lida);
+
+    if (
+      mostrarToast &&
+      toast &&
+      toastTitulo &&
+      toastMensagem &&
+      naoLidas.length > notificacoesAnteriores
+    ) {
+      const maisRecente = naoLidas[0];
+
+      toastTitulo.textContent = maisRecente.titulo;
+      toastMensagem.textContent = maisRecente.mensagem;
+
+      toast.classList.remove('hidden');
+
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 5000);
+    }
+
+    notificacoesAnteriores = naoLidas.length;
 
     if (naoLidas.length > 0) {
       contador.textContent = naoLidas.length;
@@ -90,7 +119,7 @@ async function iniciarNotificacoes() {
     dropdown.classList.toggle('hidden');
 
     if (!dropdown.classList.contains('hidden')) {
-      carregarNotificacoes();
+      carregarNotificacoes(false);
     }
   });
 
@@ -102,6 +131,12 @@ async function iniciarNotificacoes() {
     dropdown.classList.add('hidden');
   });
 
+  if (fecharToast && toast) {
+    fecharToast.addEventListener('click', () => {
+      toast.classList.add('hidden');
+    });
+  }
+
   marcarTodas.addEventListener('click', async () => {
     await fetch('/api/notificacoes/marcar-todas', {
       method: 'PUT',
@@ -110,7 +145,7 @@ async function iniciarNotificacoes() {
       }
     });
 
-    carregarNotificacoes();
+    carregarNotificacoes(false);
   });
 
   limparTodas.addEventListener('click', async () => {
@@ -121,7 +156,7 @@ async function iniciarNotificacoes() {
       }
     });
 
-    carregarNotificacoes();
+    carregarNotificacoes(false);
   });
 
   window.marcarNotificacaoComoLida = async (id) => {
@@ -132,7 +167,7 @@ async function iniciarNotificacoes() {
       }
     });
 
-    carregarNotificacoes();
+    carregarNotificacoes(false);
   };
 
   window.excluirNotificacao = async (id) => {
@@ -143,10 +178,16 @@ async function iniciarNotificacoes() {
       }
     });
 
-    carregarNotificacoes();
+    carregarNotificacoes(false);
   };
 
-  carregarNotificacoes();
+  await carregarNotificacoes(false);
+
+  if (!intervaloNotificacoes) {
+    intervaloNotificacoes = setInterval(() => {
+      carregarNotificacoes(true);
+    }, 30000);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', iniciarNotificacoes);
