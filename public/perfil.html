@@ -16,7 +16,7 @@
     <main class="flex-1">
       <div id="topbar"></div>
 
-      <section class="p-6 md:p-10">
+      <section class="p-4 md:p-10">
 
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
 
@@ -113,7 +113,12 @@
               </div>
             </div>
 
-            <canvas id="graficoFinanceiro"></canvas>
+            <div class="relative h-[260px] md:h-[320px]">
+              <canvas
+                id="graficoFinanceiro"
+                class="w-full h-full">
+              </canvas>
+            </div>
           </div>
 
           <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
@@ -124,7 +129,12 @@
               </div>
             </div>
 
-            <canvas id="graficoCategorias"></canvas>
+            <div class="relative h-[260px] md:h-[320px]">
+              <canvas
+                id="graficoCategorias"
+                class="w-full h-full">
+              </canvas>
+            </div>
           </div>
 
         </div>
@@ -186,17 +196,18 @@
   <script src="/assets/components/topbar.js"></script>
   <script src="/assets/components/notificacoes.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="/js/perfil.js"></script>
 
-  <script>
-    document.getElementById('sidebar').innerHTML =
-      criarSidebar('dashboard');
+<script>
+  document.getElementById('sidebar').innerHTML =
+    criarSidebar('dashboard');
 
-    document.getElementById('topbar').innerHTML =
-      criarTopbar(
-        'Olá, <span id="usuarioNome">usuário</span> 👋',
-        'Veja um resumo rápido da sua vida financeira.'
-      );
-  </script>
+  document.getElementById('topbar').innerHTML =
+    criarTopbar(
+      'Olá, <span id="usuarioNome">usuário</span> 👋',
+      'Veja um resumo rápido da sua vida financeira.'
+    );
+</script>
+
+<script src="/js/perfil.js"></script>
 </body>
 </html>

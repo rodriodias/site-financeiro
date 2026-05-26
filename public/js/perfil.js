@@ -134,7 +134,15 @@ async function carregarUltimasTransacoes() {
     const sinal = item.tipo === 'receita' ? '+' : '-';
 
     return `
-      <div class="flex items-center justify-between border border-slate-100 rounded-2xl p-4">
+      <div class="
+  flex flex-col sm:flex-row
+  sm:items-center
+  justify-between
+  gap-3
+  border border-slate-100
+  rounded-2xl
+  p-4
+">
         <div>
           <h3 class="font-bold text-slate-800">
             ${item.descricao || item.subcategoria || item.categoria}
@@ -145,7 +153,7 @@ async function carregarUltimasTransacoes() {
           </p>
         </div>
 
-        <strong class="${cor}">
+        <strong class="${cor} text-lg sm:text-base shrink-0">
           ${sinal} ${formatarMoeda(item.valor)}
         </strong>
       </div>
@@ -249,24 +257,57 @@ async function carregarGraficos() {
     },
 
     options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          display: false
-        }
+  responsive: true,
+  maintainAspectRatio: false,
+
+  plugins: {
+    legend: {
+      display: false
+    },
+
+    tooltip: {
+      backgroundColor: '#0f172a',
+      padding: 12,
+      borderRadius: 12,
+      titleColor: '#fff',
+      bodyColor: '#fff'
+    }
+  },
+
+  scales: {
+
+    x: {
+      grid: {
+        display: false
+      },
+
+      ticks: {
+        color: '#64748b'
+      }
+    },
+
+    y: {
+      grid: {
+        color: '#f1f5f9'
+      },
+
+      ticks: {
+        color: '#64748b'
       }
     }
+  }
+}
   });
 
-  const respostaCategorias = await fetch('/api/transacoes/categorias', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  });
+  const respostaCategorias = await fetch('/api/transacoes/gastos-categoria', {
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+});
 
-  const categorias = await respostaCategorias.json();
+const categorias = await respostaCategorias.json();
 
-  new Chart(graficoCategorias, {
+new Chart(graficoCategorias, {
     type: 'doughnut',
 
     data: {
@@ -279,8 +320,9 @@ async function carregarGraficos() {
     },
 
     options: {
-      responsive: true
-    }
+  responsive: true,
+  maintainAspectRatio: false
+}
   });
 
   calcularScore(receitas, despesas);
