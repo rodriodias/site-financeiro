@@ -1,6 +1,10 @@
 const token = localStorage.getItem('token');
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 
+const authHeaders = {
+  Authorization: `Bearer ${token}`
+};
+
 if (!token) {
   window.location.href = '/login.html';
 }
@@ -13,19 +17,16 @@ const metasAtivas = document.getElementById('metasAtivas');
 const ultimasTransacoes = document.getElementById('ultimasTransacoes');
 const dicaFinanceira = document.getElementById('dicaFinanceira');
 const listaAlertas = document.getElementById('listaAlertas');
-const graficoFinanceiro = document.getElementById('graficoFinanceiro');
 
+const graficoFinanceiro = document.getElementById('graficoFinanceiro');
 const graficoCategorias = document.getElementById('graficoCategorias');
 
 const scoreFinanceiro = document.getElementById('scoreFinanceiro');
-
 const barraScore = document.getElementById('barraScore');
-
 const mensagemScore = document.getElementById('mensagemScore');
-
 const insightsFinanceiros = document.getElementById('insightsFinanceiros');
 
-if (usuario && usuario.nome) {
+if (usuario && usuario.nome && usuarioNome) {
   usuarioNome.textContent = usuario.nome;
 }
 
@@ -48,9 +49,7 @@ function formatarData(data) {
 
 async function carregarResumoGeral() {
   const resposta = await fetch('/api/transacoes/resumo', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+    headers: authHeaders
   });
 
   const resumo = await resposta.json();
@@ -62,9 +61,7 @@ async function carregarResumoGeral() {
 
 async function carregarResumoMensal() {
   const resposta = await fetch('/api/transacoes/resumo-mensal', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+    headers: authHeaders
   });
 
   const resumo = await resposta.json();
@@ -85,9 +82,7 @@ async function carregarResumoMensal() {
 
 async function carregarMetas() {
   const resposta = await fetch('/api/metas', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+    headers: authHeaders
   });
 
   const metas = await resposta.json();
@@ -101,16 +96,16 @@ async function carregarMetas() {
 
 async function carregarUltimasTransacoes() {
   const resposta = await fetch('/api/transacoes', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+    headers: authHeaders
   });
 
   const transacoes = await resposta.json();
 
   if (!resposta.ok) {
     ultimasTransacoes.innerHTML = `
-      <p class="text-sm text-red-600">Erro ao carregar transações.</p>
+      <p class="text-sm text-red-600">
+        Erro ao carregar transações.
+      </p>
     `;
     return;
   }
@@ -135,14 +130,11 @@ async function carregarUltimasTransacoes() {
 
     return `
       <div class="
-  flex flex-col sm:flex-row
-  sm:items-center
-  justify-between
-  gap-3
-  border border-slate-100
-  rounded-2xl
-  p-4
-">
+        flex flex-col sm:flex-row
+        sm:items-center justify-between
+        gap-3 border border-slate-100
+        rounded-2xl p-4
+      ">
         <div>
           <h3 class="font-bold text-slate-800">
             ${item.descricao || item.subcategoria || item.categoria}
@@ -163,9 +155,7 @@ async function carregarUltimasTransacoes() {
 
 async function carregarAlertas() {
   const resposta = await fetch('/api/alertas', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+    headers: authHeaders
   });
 
   const alertas = await resposta.json();
@@ -188,60 +178,45 @@ async function carregarAlertas() {
     return;
   }
 
-  listaAlertas.innerHTML = alertas.map((alerta) => {
+  const estilos = {
+    erro: 'bg-red-50 text-red-600 border-red-100',
+    alerta: 'bg-amber-50 text-amber-700 border-amber-100',
+    sucesso: 'bg-emerald-50 text-emerald-700 border-emerald-100'
+  };
 
-    const estilos = {
-      erro: 'bg-red-50 text-red-600 border-red-100',
-      alerta: 'bg-amber-50 text-amber-700 border-amber-100',
-      sucesso: 'bg-emerald-50 text-emerald-700 border-emerald-100'
-    };
+  const icones = {
+    erro: '🚨',
+    alerta: '⚠️',
+    sucesso: '🎯'
+  };
 
-    const icones = {
-      erro: '🚨',
-      alerta: '⚠️',
-      sucesso: '🎯'
-    };
+  listaAlertas.innerHTML = alertas.map((alerta) => `
+    <div class="
+      border rounded-2xl p-4 text-sm font-medium
+      ${estilos[alerta.tipo]}
+    ">
+      <div class="flex items-start gap-3">
+        <span class="text-lg">
+          ${icones[alerta.tipo]}
+        </span>
 
-    return `
-      <div class="
-        border rounded-2xl p-4 text-sm font-medium
-        ${estilos[alerta.tipo]}
-      ">
-        <div class="flex items-start gap-3">
-          <span class="text-lg">
-            ${icones[alerta.tipo]}
-          </span>
-
-          <span>
-            ${alerta.mensagem}
-          </span>
-        </div>
+        <span>
+          ${alerta.mensagem}
+        </span>
       </div>
-    `;
-  }).join('');
+    </div>
+  `).join('');
 }
 
-carregarResumoGeral();
-carregarResumoMensal();
-carregarMetas();
-carregarUltimasTransacoes();
-carregarAlertas();
-
 async function carregarGraficos() {
-
   const respostaResumo = await fetch('/api/transacoes/resumo-mensal', {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
+    headers: authHeaders
   });
 
   const resumo = await respostaResumo.json();
 
-  const receitas =
-    Number(resumo.receitas || 0);
-
-  const despesas =
-    Number(resumo.despesas || 0);
+  const receitas = Number(resumo.receitas || 0);
+  const despesas = Number(resumo.despesas || 0);
 
   new Chart(graficoFinanceiro, {
     type: 'bar',
@@ -257,57 +232,54 @@ async function carregarGraficos() {
     },
 
     options: {
-  responsive: true,
-  maintainAspectRatio: false,
+      responsive: true,
+      maintainAspectRatio: false,
 
-  plugins: {
-    legend: {
-      display: false
-    },
+      plugins: {
+        legend: {
+          display: false
+        },
 
-    tooltip: {
-      backgroundColor: '#0f172a',
-      padding: 12,
-      borderRadius: 12,
-      titleColor: '#fff',
-      bodyColor: '#fff'
-    }
-  },
-
-  scales: {
-
-    x: {
-      grid: {
-        display: false
+        tooltip: {
+          backgroundColor: '#0f172a',
+          padding: 12,
+          borderRadius: 12,
+          titleColor: '#fff',
+          bodyColor: '#fff'
+        }
       },
 
-      ticks: {
-        color: '#64748b'
-      }
-    },
+      scales: {
+        x: {
+          grid: {
+            display: false
+          },
 
-    y: {
-      grid: {
-        color: '#f1f5f9'
-      },
+          ticks: {
+            color: '#64748b'
+          }
+        },
 
-      ticks: {
-        color: '#64748b'
+        y: {
+          grid: {
+            color: '#f1f5f9'
+          },
+
+          ticks: {
+            color: '#64748b'
+          }
+        }
       }
     }
-  }
-}
   });
 
   const respostaCategorias = await fetch('/api/transacoes/gastos-categoria', {
-  headers: {
-    Authorization: `Bearer ${token}`
-  }
-});
+    headers: authHeaders
+  });
 
-const categorias = await respostaCategorias.json();
+  const categorias = await respostaCategorias.json();
 
-new Chart(graficoCategorias, {
+  new Chart(graficoCategorias, {
     type: 'doughnut',
 
     data: {
@@ -315,21 +287,48 @@ new Chart(graficoCategorias, {
 
       datasets: [{
         data: categorias.map((item) => item.total),
-        borderWidth: 0
+        borderWidth: 0,
+        borderRadius: 8,
+        spacing: 4,
+        hoverOffset: 12,
+        cutout: '68%'
       }]
     },
 
     options: {
-  responsive: true,
-  maintainAspectRatio: false
-}
+      responsive: true,
+      maintainAspectRatio: false,
+
+      plugins: {
+        legend: {
+          position: 'bottom',
+
+          labels: {
+            padding: 20,
+            usePointStyle: true,
+            pointStyle: 'circle',
+            color: '#475569',
+            font: {
+              size: 12
+            }
+          }
+        },
+
+        tooltip: {
+          backgroundColor: '#0f172a',
+          padding: 12,
+          borderRadius: 12,
+          titleColor: '#fff',
+          bodyColor: '#fff'
+        }
+      }
+    }
   });
 
   calcularScore(receitas, despesas);
 }
 
 function calcularScore(receitas, despesas) {
-
   let score = 100;
 
   if (despesas > receitas) {
@@ -340,61 +339,45 @@ function calcularScore(receitas, despesas) {
     score = 80;
   }
 
-  scoreFinanceiro.textContent =
-    `${score}%`;
-
-  barraScore.style.width =
-    `${score}%`;
+  scoreFinanceiro.textContent = `${score}%`;
+  barraScore.style.width = `${score}%`;
 
   if (score >= 80) {
-
     mensagemScore.textContent =
       'Sua saúde financeira está excelente.';
 
     barraScore.className =
       'bg-emerald-500 h-3 rounded-full transition-all duration-500';
-
   } else if (score >= 60) {
-
     mensagemScore.textContent =
       'Sua saúde financeira está razoável, mas há espaço para melhorar.';
 
     barraScore.className =
       'bg-amber-500 h-3 rounded-full transition-all duration-500';
-
   } else {
-
     mensagemScore.textContent =
       'Suas despesas estão comprometendo sua saúde financeira.';
 
     barraScore.className =
       'bg-red-500 h-3 rounded-full transition-all duration-500';
-
   }
 
   gerarInsights(receitas, despesas, score);
 }
 
 function gerarInsights(receitas, despesas, score) {
-
   const insights = [];
 
   if (despesas > receitas) {
-    insights.push(
-      '⚠️ Você gastou mais do que recebeu neste mês.'
-    );
+    insights.push('⚠️ Você gastou mais do que recebeu neste mês.');
   }
 
   if (score >= 80) {
-    insights.push(
-      '🎯 Seu controle financeiro está muito saudável.'
-    );
+    insights.push('🎯 Seu controle financeiro está muito saudável.');
   }
 
   if (receitas > 0 && despesas <= receitas * 0.5) {
-    insights.push(
-      '💰 Você conseguiu economizar boa parte da sua renda.'
-    );
+    insights.push('💰 Você conseguiu economizar boa parte da sua renda.');
   }
 
   if (insights.length === 0) {
@@ -403,12 +386,16 @@ function gerarInsights(receitas, despesas, score) {
     );
   }
 
-  insightsFinanceiros.innerHTML =
-    insights.map((item) => `
-      <div class="bg-slate-50 rounded-2xl p-4 text-sm text-slate-700">
-        ${item}
-      </div>
-    `).join('');
+  insightsFinanceiros.innerHTML = insights.map((item) => `
+    <div class="bg-slate-50 rounded-2xl p-4 text-sm text-slate-700">
+      ${item}
+    </div>
+  `).join('');
 }
 
+carregarResumoGeral();
+carregarResumoMensal();
+carregarMetas();
+carregarUltimasTransacoes();
+carregarAlertas();
 carregarGraficos();
