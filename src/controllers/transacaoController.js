@@ -274,55 +274,122 @@ exports.resumoFinanceiro = (req, res) => {
 };
 
 exports.resumoMensal = (req, res) => {
+
   const usuarioId = req.usuario.id;
+
+  const {
+    inicio,
+    fim
+  } = req.query;
+
+  let filtroPeriodo = `
+    AND MONTH(data_transacao) = MONTH(CURRENT_DATE())
+    AND YEAR(data_transacao) = YEAR(CURRENT_DATE())
+  `;
+
+  const valores = [usuarioId];
+
+  if (inicio && fim) {
+
+    filtroPeriodo = `
+      AND DATE(data_transacao) BETWEEN ? AND ?
+    `;
+
+    valores.push(inicio, fim);
+  }
 
   db.query(
     `SELECT
       SUM(CASE WHEN tipo = 'receita' THEN valor ELSE 0 END) AS receitas,
+
       SUM(CASE WHEN tipo = 'despesa' THEN valor ELSE 0 END) AS despesas
+
      FROM transacoes
+
      WHERE usuario_id = ?
-     AND MONTH(data_transacao) = MONTH(CURRENT_DATE())
-     AND YEAR(data_transacao) = YEAR(CURRENT_DATE())`,
-    [usuarioId],
+     ${filtroPeriodo}`,
+
+    valores,
+
     (erro, resultado) => {
+
       if (erro) {
-        return res.status(500).json({ erro: 'Erro ao gerar resumo mensal.' });
+        return res.status(500).json({
+          erro: 'Erro ao gerar resumo mensal.'
+        });
       }
 
-      const receitas = Number(resultado[0].receitas || 0);
-      const despesas = Number(resultado[0].despesas || 0);
+      const receitas =
+        Number(resultado[0].receitas || 0);
+
+      const despesas =
+        Number(resultado[0].despesas || 0);
 
       return res.json({
         receitas,
         despesas,
         saldo: receitas - despesas
       });
+
     }
   );
+
 };
 
 exports.gastosPorCategoria = (req, res) => {
+
   const usuarioId = req.usuario.id;
 
+  const {
+    inicio,
+    fim
+  } = req.query;
+
+  let filtroPeriodo = `
+    AND MONTH(data_transacao) = MONTH(CURRENT_DATE())
+    AND YEAR(data_transacao) = YEAR(CURRENT_DATE())
+  `;
+
+  const valores = [usuarioId];
+
+  if (inicio && fim) {
+
+    filtroPeriodo = `
+      AND DATE(data_transacao) BETWEEN ? AND ?
+    `;
+
+    valores.push(inicio, fim);
+  }
+
   db.query(
-    `SELECT categoria, SUM(valor) AS total
+    `SELECT
+      categoria,
+      SUM(valor) AS total
+
      FROM transacoes
+
      WHERE usuario_id = ?
      AND tipo = 'despesa'
-     AND MONTH(data_transacao) = MONTH(CURRENT_DATE())
-     AND YEAR(data_transacao) = YEAR(CURRENT_DATE())
+     ${filtroPeriodo}
+
      GROUP BY categoria
      ORDER BY total DESC`,
-    [usuarioId],
+
+    valores,
+
     (erro, categorias) => {
+
       if (erro) {
-        return res.status(500).json({ erro: 'Erro ao buscar categorias.' });
+        return res.status(500).json({
+          erro: 'Erro ao buscar categorias.'
+        });
       }
 
       return res.json(categorias);
+
     }
   );
+
 };
 
 exports.editarTransacao = (req, res) => {
@@ -383,6 +450,389 @@ exports.editarTransacao = (req, res) => {
       });
     }
   );
+};
+
+exports.comparativoFinanceiro = (req, res) => {
+
+  const usuarioId = req.usuario.id;
+
+  const {
+    inicio,
+    fim
+  } = req.query;
+
+  if (!inicio || !fim) {
+
+    return res.status(400).json({
+      erro: 'Informe início e fim.'
+    });
+
+  }
+
+  const dataInicio =
+    new Date(inicio);
+
+  const dataFim =
+    new Date(fim);
+
+  const diferencaDias =
+    Math.ceil(
+      (dataFim - dataInicio)
+      / (1000 * 60 * 60 * 24)
+    ) + 1;
+
+  const inicioAnterior =
+    new Date(dataInicio);
+
+  inicioAnterior.setDate(
+    inicioAnterior.getDate()
+    - diferencaDias
+  );
+
+  const fimAnterior =
+    new Date(dataFim);
+
+  fimAnterior.setDate(
+    fimAnterior.getDate()
+    - diferencaDias
+  );
+
+  const formatar = (data) => {
+    return data
+      .toISOString()
+      .split('T')[0];
+  };
+
+  db.query(
+    `SELECT
+      SUM(
+        CASE
+          WHEN tipo = 'receita'
+          THEN valor
+          ELSE 0
+        END
+      ) AS receitas,
+
+      SUM(
+        CASE
+          WHEN tipo = 'despesa'
+          THEN valor
+          ELSE 0
+        END
+      ) AS despesas
+
+     FROM transacoes
+
+     WHERE usuario_id = ?
+     AND DATE(data_transacao)
+     BETWEEN ? AND ?`,
+
+    [
+      usuarioId,
+      inicio,
+      fim
+    ],
+
+    (erroAtual, atual) => {
+
+      if (erroAtual) {
+
+        return res.status(500).json({
+          erro: 'Erro ao comparar períodos.'
+        });
+
+      }
+
+      db.query(
+        `SELECT
+          SUM(
+            CASE
+              WHEN tipo = 'receita'
+              THEN valor
+              ELSE 0
+            END
+          ) AS receitas,
+
+          SUM(
+            CASE
+              WHEN tipo = 'despesa'
+              THEN valor
+              ELSE 0
+            END
+          ) AS despesas
+
+         FROM transacoes
+
+         WHERE usuario_id = ?
+         AND DATE(data_transacao)
+         BETWEEN ? AND ?`,
+
+        [
+          usuarioId,
+          formatar(inicioAnterior),
+          formatar(fimAnterior)
+        ],
+
+        (erroAnterior, anterior) => {
+
+          if (erroAnterior) {
+
+            return res.status(500).json({
+              erro: 'Erro ao comparar períodos.'
+            });
+
+          }
+
+          const atualReceitas =
+            Number(
+              atual[0].receitas || 0
+            );
+
+          const atualDespesas =
+            Number(
+              atual[0].despesas || 0
+            );
+
+          const anteriorReceitas =
+            Number(
+              anterior[0].receitas || 0
+            );
+
+          const anteriorDespesas =
+            Number(
+              anterior[0].despesas || 0
+            );
+
+          return res.json({
+
+            atual: {
+              receitas: atualReceitas,
+              despesas: atualDespesas
+            },
+
+            anterior: {
+              receitas: anteriorReceitas,
+              despesas: anteriorDespesas
+            }
+
+          });
+
+        }
+      );
+
+    }
+  );
+
+};
+
+exports.comparativoCategorias = (req, res) => {
+
+  const usuarioId = req.usuario.id;
+
+  const {
+    inicio,
+    fim
+  } = req.query;
+
+  if (!inicio || !fim) {
+
+    return res.status(400).json({
+      erro: 'Informe início e fim.'
+    });
+
+  }
+
+  const dataInicio =
+    new Date(inicio);
+
+  const dataFim =
+    new Date(fim);
+
+  const diferencaDias =
+    Math.ceil(
+      (dataFim - dataInicio)
+      / (1000 * 60 * 60 * 24)
+    ) + 1;
+
+  const inicioAnterior =
+    new Date(dataInicio);
+
+  inicioAnterior.setDate(
+    inicioAnterior.getDate()
+    - diferencaDias
+  );
+
+  const fimAnterior =
+    new Date(dataFim);
+
+  fimAnterior.setDate(
+    fimAnterior.getDate()
+    - diferencaDias
+  );
+
+  const formatar = (data) => {
+    return data
+      .toISOString()
+      .split('T')[0];
+  };
+
+  db.query(
+
+    `SELECT
+      categoria,
+      SUM(valor) AS total
+
+     FROM transacoes
+
+     WHERE usuario_id = ?
+     AND tipo = 'despesa'
+     AND DATE(data_transacao)
+     BETWEEN ? AND ?
+
+     GROUP BY categoria`,
+
+    [
+      usuarioId,
+      inicio,
+      fim
+    ],
+
+    (erroAtual, atual) => {
+
+      if (erroAtual) {
+
+        return res.status(500).json({
+          erro: 'Erro ao comparar categorias.'
+        });
+
+      }
+
+      db.query(
+
+        `SELECT
+          categoria,
+          SUM(valor) AS total
+
+         FROM transacoes
+
+         WHERE usuario_id = ?
+         AND tipo = 'despesa'
+         AND DATE(data_transacao)
+         BETWEEN ? AND ?
+
+         GROUP BY categoria`,
+
+        [
+          usuarioId,
+          formatar(inicioAnterior),
+          formatar(fimAnterior)
+        ],
+
+        (erroAnterior, anterior) => {
+
+          if (erroAnterior) {
+
+            return res.status(500).json({
+              erro: 'Erro ao comparar categorias.'
+            });
+
+          }
+
+          return res.json({
+            atual,
+            anterior
+          });
+
+        }
+
+      );
+
+    }
+
+  );
+
+};
+
+exports.evolucaoMensal = (req, res) => {
+
+  const usuarioId =
+    req.usuario.id;
+
+  db.query(
+
+    `SELECT
+
+      DATE_FORMAT(
+        data_transacao,
+        '%Y-%m'
+      ) AS mes,
+
+      SUM(
+        CASE
+          WHEN tipo = 'receita'
+          THEN valor
+          ELSE 0
+        END
+      ) AS receitas,
+
+      SUM(
+        CASE
+          WHEN tipo = 'despesa'
+          THEN valor
+          ELSE 0
+        END
+      ) AS despesas
+
+     FROM transacoes
+
+     WHERE usuario_id = ?
+
+     GROUP BY mes
+
+     ORDER BY mes ASC`,
+
+    [usuarioId],
+
+    (erro, resultados) => {
+
+      if (erro) {
+
+        return res.status(500).json({
+          erro:
+            'Erro ao carregar evolução mensal.'
+        });
+
+      }
+
+      const dados =
+        resultados.map((item) => {
+
+          const saldo =
+            Number(item.receitas || 0)
+            - Number(item.despesas || 0);
+
+          return {
+
+            mes: item.mes,
+
+            receitas:
+              Number(item.receitas || 0),
+
+            despesas:
+              Number(item.despesas || 0),
+
+            saldo
+
+          };
+
+        });
+
+      return res.json(dados);
+
+    }
+
+  );
+
 };
 
 exports.excluirTransacao = (req, res) => {

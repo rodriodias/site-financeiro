@@ -1,13 +1,57 @@
 const token = localStorage.getItem('token');
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 
+if (!token) {
+  window.location.href = '/login.html';
+}
+
 const authHeaders = {
   Authorization: `Bearer ${token}`
 };
 
-if (!token) {
-  window.location.href = '/login.html';
+let periodoAtual = {
+  inicio: null,
+  fim: null
+};
+
+let filtroSalvoTipo = null;
+let filtroSalvoPeriodo = null;
+
+function salvarFiltroDashboard(tipo = 'personalizado', periodo = null) {
+  localStorage.setItem(
+    'filtroDashboard',
+    JSON.stringify({
+      tipo,
+      periodo,
+      inicio: periodoAtual.inicio,
+      fim: periodoAtual.fim
+    })
+  );
 }
+
+function carregarFiltroDashboard() {
+  const filtroSalvo = localStorage.getItem('filtroDashboard');
+
+  if (!filtroSalvo) return;
+
+  const filtro = JSON.parse(filtroSalvo);
+
+  if (filtro.inicio && filtro.fim) {
+    periodoAtual = {
+      inicio: filtro.inicio,
+      fim: filtro.fim
+    };
+
+    filtroSalvoTipo = filtro.tipo;
+    filtroSalvoPeriodo = filtro.periodo;
+  }
+}
+
+carregarFiltroDashboard();
+
+let chartFinanceiro = null;
+let chartCategorias = null;
+let chartEvolucao = null;
 
 const usuarioNome = document.getElementById('usuarioNome');
 const saldoAtual = document.getElementById('saldoAtual');
@@ -20,11 +64,25 @@ const listaAlertas = document.getElementById('listaAlertas');
 
 const graficoFinanceiro = document.getElementById('graficoFinanceiro');
 const graficoCategorias = document.getElementById('graficoCategorias');
+const graficoEvolucao = document.getElementById('graficoEvolucao');
+const graficoFinanceiroVazio = document.getElementById('graficoFinanceiroVazio');
+
+const graficoCategoriasVazio = document.getElementById('graficoCategoriasVazio');
+
+const graficoEvolucaoVazio = document.getElementById('graficoEvolucaoVazio');
 
 const scoreFinanceiro = document.getElementById('scoreFinanceiro');
 const barraScore = document.getElementById('barraScore');
 const mensagemScore = document.getElementById('mensagemScore');
 const insightsFinanceiros = document.getElementById('insightsFinanceiros');
+
+const botoesFiltroDashboard = document.querySelectorAll('.filtroDashboard');
+const botaoPeriodoPersonalizado = document.getElementById('botaoPeriodoPersonalizado');
+const periodoPersonalizado = document.getElementById('periodoPersonalizado');
+const dataInicioDashboard = document.getElementById('dataInicioDashboard');
+const dataFimDashboard = document.getElementById('dataFimDashboard');
+const aplicarPeriodoPersonalizado = document.getElementById('aplicarPeriodoPersonalizado');
+const limparFiltrosDashboard = document.getElementById('limparFiltrosDashboard');
 
 if (usuario && usuario.nome && usuarioNome) {
   usuarioNome.textContent = usuario.nome;
@@ -36,6 +94,26 @@ function logout() {
   window.location.href = '/login.html';
 }
 
+function montarUrl(base) {
+  if (periodoAtual.inicio && periodoAtual.fim) {
+    return `${base}?inicio=${periodoAtual.inicio}&fim=${periodoAtual.fim}`;
+  }
+
+  return base;
+}
+
+function definirPeriodo(dias) {
+  const hoje = new Date();
+  const inicio = new Date();
+
+  inicio.setDate(hoje.getDate() - dias);
+
+  periodoAtual = {
+    inicio: inicio.toISOString().split('T')[0],
+    fim: hoje.toISOString().split('T')[0]
+  };
+}
+
 function formatarMoeda(valor) {
   return Number(valor || 0).toLocaleString('pt-BR', {
     style: 'currency',
@@ -44,11 +122,112 @@ function formatarMoeda(valor) {
 }
 
 function formatarData(data) {
-  return new Date(data).toLocaleDateString('pt-BR');
+  if (!data) return '';
+
+  const dataTexto = String(data).split('T')[0];
+  const partes = dataTexto.split('-');
+
+  if (partes.length !== 3) {
+    return dataTexto;
+  }
+
+  const [ano, mes, dia] = partes;
+
+  return `${dia}/${mes}/${ano}`;
+}
+
+function textoPeriodoAtual() {
+  if (!periodoAtual.inicio || !periodoAtual.fim) {
+    return '';
+  }
+
+  return `Período selecionado: ${formatarData(periodoAtual.inicio)} até ${formatarData(periodoAtual.fim)}`;
+}
+
+function atualizarIndicadoresPeriodo() {
+  const indicadorGlobal = document.getElementById('indicadorPeriodoGlobal');
+  const indicadores = document.querySelectorAll('.periodoInfo');
+
+  if (!periodoAtual.inicio || !periodoAtual.fim) {
+    if (indicadorGlobal) {
+      indicadorGlobal.classList.add('hidden');
+      indicadorGlobal.textContent = '';
+    }
+
+    indicadores.forEach((item) => {
+      item.classList.add('hidden');
+      item.textContent = '';
+    });
+
+    if (limparFiltrosDashboard) {
+      limparFiltrosDashboard.classList.add('hidden');
+    }
+
+    return;
+  }
+
+  const texto = textoPeriodoAtual();
+
+  if (indicadorGlobal) {
+    indicadorGlobal.textContent = texto;
+    indicadorGlobal.classList.remove('hidden');
+  }
+
+  indicadores.forEach((item) => {
+    item.textContent = texto;
+    item.classList.remove('hidden');
+  });
+
+  if (limparFiltrosDashboard) {
+    limparFiltrosDashboard.classList.remove('hidden');
+  }
+}
+
+function atualizarVisualFiltros(botaoAtivo = null) {
+  botoesFiltroDashboard.forEach((item) => {
+    item.classList.remove('bg-emerald-600', 'text-white');
+
+    item.classList.add(
+      'bg-white',
+      'border',
+      'border-slate-200',
+      'text-slate-700'
+    );
+  });
+
+  botaoPeriodoPersonalizado.classList.remove(
+    'bg-emerald-600',
+    'text-white'
+  );
+
+  botaoPeriodoPersonalizado.classList.add(
+    'bg-emerald-50',
+    'border',
+    'border-emerald-100',
+    'text-emerald-700'
+  );
+
+  if (botaoAtivo) {
+    botaoAtivo.classList.remove(
+      'bg-white',
+      'border',
+      'border-slate-200',
+      'text-slate-700',
+      'bg-emerald-50',
+      'border-emerald-100',
+      'text-emerald-700'
+    );
+
+    botaoAtivo.classList.add('bg-emerald-600', 'text-white');
+  }
 }
 
 async function carregarResumoGeral() {
-  const resposta = await fetch('/api/transacoes/resumo', {
+  const endpoint = periodoAtual.inicio && periodoAtual.fim
+    ? montarUrl('/api/transacoes/resumo-mensal')
+    : '/api/transacoes/resumo';
+
+  const resposta = await fetch(endpoint, {
     headers: authHeaders
   });
 
@@ -60,7 +239,7 @@ async function carregarResumoGeral() {
 }
 
 async function carregarResumoMensal() {
-  const resposta = await fetch('/api/transacoes/resumo-mensal', {
+  const resposta = await fetch(montarUrl('/api/transacoes/resumo-mensal'), {
     headers: authHeaders
   });
 
@@ -73,10 +252,13 @@ async function carregarResumoMensal() {
 
   if (resumo.despesas > resumo.receitas) {
     dicaFinanceira.textContent =
-      'Suas despesas do mês estão maiores que suas receitas. Vale revisar gastos opcionais.';
+      'Suas despesas estão maiores que suas receitas neste período. Vale revisar gastos opcionais.';
   } else if (resumo.receitas > 0) {
     dicaFinanceira.textContent =
-      'Você está mantendo receitas acima das despesas neste mês. Continue acompanhando suas categorias.';
+      'Você está mantendo receitas acima das despesas neste período. Continue acompanhando suas categorias.';
+  } else {
+    dicaFinanceira.textContent =
+      'Registre suas movimentações para receber uma análise financeira mais precisa.';
   }
 }
 
@@ -110,12 +292,22 @@ async function carregarUltimasTransacoes() {
     return;
   }
 
-  const ultimas = transacoes.slice(0, 5);
+  let transacoesFiltradas = transacoes;
+
+  if (periodoAtual.inicio && periodoAtual.fim) {
+    transacoesFiltradas = transacoes.filter((item) => {
+      const data = item.data_transacao.split('T')[0];
+
+      return data >= periodoAtual.inicio && data <= periodoAtual.fim;
+    });
+  }
+
+  const ultimas = transacoesFiltradas.slice(0, 5);
 
   if (ultimas.length === 0) {
     ultimasTransacoes.innerHTML = `
       <p class="text-sm text-slate-500">
-        Nenhuma transação cadastrada ainda.
+        Nenhuma transação encontrada para este período.
       </p>
     `;
     return;
@@ -160,14 +352,7 @@ async function carregarAlertas() {
 
   const alertas = await resposta.json();
 
-  if (!resposta.ok) {
-    listaAlertas.innerHTML = `
-      <p class="text-sm text-red-600">
-        Erro ao carregar alertas.
-      </p>
-    `;
-    return;
-  }
+  if (!resposta.ok || !listaAlertas) return;
 
   if (alertas.length === 0) {
     listaAlertas.innerHTML = `
@@ -209,16 +394,33 @@ async function carregarAlertas() {
 }
 
 async function carregarGraficos() {
-  const respostaResumo = await fetch('/api/transacoes/resumo-mensal', {
+  const respostaResumo = await fetch(montarUrl('/api/transacoes/resumo-mensal'), {
     headers: authHeaders
   });
 
   const resumo = await respostaResumo.json();
 
+  if (!respostaResumo.ok) return;
+
   const receitas = Number(resumo.receitas || 0);
   const despesas = Number(resumo.despesas || 0);
 
-  new Chart(graficoFinanceiro, {
+  const semResumo =
+  receitas === 0 &&
+  despesas === 0;
+
+graficoFinanceiroVazio.classList.toggle('hidden', !semResumo);
+graficoFinanceiro.classList.toggle('opacity-0', semResumo);
+
+  if (chartFinanceiro) {
+    chartFinanceiro.destroy();
+  }
+
+  if (chartCategorias) {
+    chartCategorias.destroy();
+  }
+
+  chartFinanceiro = new Chart(graficoFinanceiro, {
     type: 'bar',
 
     data: {
@@ -273,13 +475,21 @@ async function carregarGraficos() {
     }
   });
 
-  const respostaCategorias = await fetch('/api/transacoes/gastos-categoria', {
+  const respostaCategorias = await fetch(montarUrl('/api/transacoes/gastos-categoria'), {
     headers: authHeaders
   });
 
   const categorias = await respostaCategorias.json();
 
-  new Chart(graficoCategorias, {
+  if (!respostaCategorias.ok) return;
+
+  const semCategorias =
+  categorias.length === 0;
+
+graficoCategoriasVazio.classList.toggle('hidden', !semCategorias);
+graficoCategorias.classList.toggle('opacity-0', semCategorias);
+
+  chartCategorias = new Chart(graficoCategorias, {
     type: 'doughnut',
 
     data: {
@@ -328,6 +538,120 @@ async function carregarGraficos() {
   calcularScore(receitas, despesas);
 }
 
+async function carregarEvolucaoMensal() {
+
+  const resposta = await fetch(
+  montarUrl('/api/transacoes/evolucao-mensal'),
+  {
+    headers: authHeaders
+  }
+);
+
+  const dados = await resposta.json();
+
+  if (!resposta.ok) return;
+
+  const semEvolucao =
+  dados.length === 0;
+
+graficoEvolucaoVazio.classList.toggle('hidden', !semEvolucao);
+graficoEvolucao.classList.toggle('opacity-0', semEvolucao);
+
+if (semEvolucao) return;
+
+  const labels = dados.map((item) => {
+
+    const [ano, mes] =
+      item.mes.split('-');
+
+    return `${mes}/${ano}`;
+
+  });
+
+  const receitas =
+    dados.map((item) => item.receitas);
+
+  const despesas =
+    dados.map((item) => item.despesas);
+
+  const saldo =
+    dados.map((item) => item.saldo);
+
+  if (chartEvolucao) {
+    chartEvolucao.destroy();
+  }
+
+  chartEvolucao = new Chart(
+    graficoEvolucao,
+    {
+
+      type: 'line',
+
+      data: {
+
+        labels,
+
+        datasets: [
+
+          {
+            label: 'Receitas',
+            data: receitas,
+            tension: 0.4
+          },
+
+          {
+            label: 'Despesas',
+            data: despesas,
+            tension: 0.4
+          },
+
+          {
+            label: 'Saldo',
+            data: saldo,
+            tension: 0.4
+          }
+
+        ]
+
+      },
+
+      options: {
+
+        responsive: true,
+
+        maintainAspectRatio: false,
+
+        plugins: {
+
+          legend: {
+            position: 'bottom'
+          }
+
+        },
+
+        scales: {
+
+          x: {
+            grid: {
+              display: false
+            }
+          },
+
+          y: {
+            grid: {
+              color: '#f1f5f9'
+            }
+          }
+
+        }
+
+      }
+
+    }
+  );
+
+}
+
 function calcularScore(receitas, despesas) {
   let score = 100;
 
@@ -365,11 +689,175 @@ function calcularScore(receitas, despesas) {
   gerarInsights(receitas, despesas, score);
 }
 
-function gerarInsights(receitas, despesas, score) {
+async function carregarComparativo() {
+  if (!periodoAtual.inicio || !periodoAtual.fim) {
+    return null;
+  }
+
+  const resposta = await fetch(
+    montarUrl('/api/transacoes/comparativo'),
+    {
+      headers: authHeaders
+    }
+  );
+
+  const dados = await resposta.json();
+
+  if (!resposta.ok) {
+    return null;
+  }
+
+  return dados;
+}
+
+async function carregarComparativoCategorias() {
+
+  if (
+    !periodoAtual.inicio ||
+    !periodoAtual.fim
+  ) {
+    return null;
+  }
+
+  const resposta = await fetch(
+
+    montarUrl(
+      '/api/transacoes/comparativo-categorias'
+    ),
+
+    {
+      headers: authHeaders
+    }
+
+  );
+
+  const dados = await resposta.json();
+
+  if (!resposta.ok) {
+    return null;
+  }
+
+  return dados;
+
+}
+
+async function gerarInsights(receitas, despesas, score) {
   const insights = [];
 
+  const comparativo = await carregarComparativo();
+  const comparativoCategorias = await carregarComparativoCategorias();
+
+  if (comparativo) {
+    const receitasAtual = Number(comparativo.atual.receitas || 0);
+    const receitasAnterior = Number(comparativo.anterior.receitas || 0);
+
+    const despesasAtual = Number(comparativo.atual.despesas || 0);
+    const despesasAnterior = Number(comparativo.anterior.despesas || 0);
+
+    if (receitasAnterior > 0) {
+      const variacaoReceitas =
+        ((receitasAtual - receitasAnterior) / receitasAnterior) * 100;
+
+      if (variacaoReceitas > 0) {
+        insights.push(
+          `📈 Suas receitas aumentaram ${variacaoReceitas.toFixed(0)}% em relação ao período anterior.`
+        );
+      } else if (variacaoReceitas < 0) {
+        insights.push(
+          `📉 Suas receitas reduziram ${Math.abs(variacaoReceitas).toFixed(0)}% em relação ao período anterior.`
+        );
+      }
+    }
+
+    if (despesasAnterior > 0) {
+      const variacaoDespesas =
+        ((despesasAtual - despesasAnterior) / despesasAnterior) * 100;
+
+      if (variacaoDespesas > 0) {
+        insights.push(
+          `⚠️ Suas despesas aumentaram ${variacaoDespesas.toFixed(0)}% em relação ao período anterior.`
+        );
+      } else if (variacaoDespesas < 0) {
+        insights.push(
+          `✅ Suas despesas reduziram ${Math.abs(variacaoDespesas).toFixed(0)}% em relação ao período anterior.`
+        );
+      }
+    }
+  }
+
+  if (comparativoCategorias) {
+
+  const categoriasAtuais =
+    comparativoCategorias.atual;
+
+  const categoriasAnteriores =
+    comparativoCategorias.anterior;
+
+  categoriasAtuais.forEach((categoriaAtual) => {
+
+    const categoriaAnterior =
+      categoriasAnteriores.find(
+        (item) =>
+          item.categoria ===
+          categoriaAtual.categoria
+      );
+
+    if (!categoriaAnterior) return;
+
+    const atual =
+      Number(categoriaAtual.total || 0);
+
+    const anterior =
+      Number(categoriaAnterior.total || 0);
+
+    if (anterior <= 0) return;
+
+    const variacao =
+      ((atual - anterior) / anterior) * 100;
+
+    if (Math.abs(variacao) < 10) return;
+
+    if (variacao > 0) {
+
+      insights.push(
+        `📈 ${categoriaAtual.categoria} aumentou ${variacao.toFixed(0)}% em relação ao período anterior.`
+      );
+
+    } else {
+
+      insights.push(
+        `📉 ${categoriaAtual.categoria} reduziu ${Math.abs(variacao).toFixed(0)}% em relação ao período anterior.`
+      );
+
+    }
+
+  });
+
+  const maiorCategoria =
+    categoriasAtuais.reduce(
+      (maior, atual) => {
+
+        return Number(atual.total)
+          > Number(maior.total)
+          ? atual
+          : maior;
+
+      },
+      categoriasAtuais[0]
+    );
+
+  if (maiorCategoria) {
+
+    insights.push(
+      `💸 ${maiorCategoria.categoria} foi sua categoria com maior gasto no período.`
+    );
+
+  }
+
+}
+
   if (despesas > receitas) {
-    insights.push('⚠️ Você gastou mais do que recebeu neste mês.');
+    insights.push('⚠️ Você gastou mais do que recebeu neste período.');
   }
 
   if (score >= 80) {
@@ -393,9 +881,90 @@ function gerarInsights(receitas, despesas, score) {
   `).join('');
 }
 
+async function atualizarDashboardCompleto() {
+  await carregarResumoGeral();
+  await carregarResumoMensal();
+  await carregarUltimasTransacoes();
+  await carregarGraficos();
+  await carregarEvolucaoMensal();
+  atualizarIndicadoresPeriodo();
+}
+
+botaoPeriodoPersonalizado.addEventListener('click', () => {
+  periodoPersonalizado.classList.toggle('hidden');
+});
+
+aplicarPeriodoPersonalizado.addEventListener('click', async () => {
+  const inicio = dataInicioDashboard.value;
+  const fim = dataFimDashboard.value;
+
+  if (!inicio || !fim) {
+    alert('Selecione a data inicial e a data final.');
+    return;
+  }
+
+  if (inicio > fim) {
+    alert('A data inicial não pode ser maior que a data final.');
+    return;
+  }
+
+  periodoAtual = {
+    inicio,
+    fim
+  };
+
+  salvarFiltroDashboard('personalizado');
+  atualizarVisualFiltros(botaoPeriodoPersonalizado);
+  await atualizarDashboardCompleto();
+});
+
+botoesFiltroDashboard.forEach((botao) => {
+  botao.addEventListener('click', async () => {
+    const dias = Number(botao.dataset.periodo);
+
+    definirPeriodo(dias);
+    salvarFiltroDashboard('rapido', dias);
+    atualizarVisualFiltros(botao);
+
+    await atualizarDashboardCompleto();
+  });
+});
+
+limparFiltrosDashboard.addEventListener('click', async () => {
+  periodoAtual = {
+    inicio: null,
+    fim: null
+  };
+
+  localStorage.removeItem('filtroDashboard');
+
+  dataInicioDashboard.value = '';
+  dataFimDashboard.value = '';
+
+  atualizarVisualFiltros();
+  await atualizarDashboardCompleto();
+});
+
+if (periodoAtual.inicio && periodoAtual.fim) {
+  dataInicioDashboard.value = periodoAtual.inicio;
+  dataFimDashboard.value = periodoAtual.fim;
+
+  if (filtroSalvoTipo === 'rapido') {
+    const botaoSalvo = document.querySelector(
+      `.filtroDashboard[data-periodo="${filtroSalvoPeriodo}"]`
+    );
+
+    atualizarVisualFiltros(botaoSalvo);
+  } else {
+    atualizarVisualFiltros(botaoPeriodoPersonalizado);
+  }
+}
+
 carregarResumoGeral();
 carregarResumoMensal();
 carregarMetas();
 carregarUltimasTransacoes();
 carregarAlertas();
 carregarGraficos();
+carregarEvolucaoMensal();
+atualizarIndicadoresPeriodo();
